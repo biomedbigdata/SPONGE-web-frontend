@@ -581,7 +581,7 @@ export class SearchComponent implements OnInit {
           $(this).toggleClass('selected');
         })
 
-      $(".export_nodes").last().click( function() {
+      $(document).on('click', ".export_nodes", function() {
         /* export data to browse page, where a graph will be shown */ 
 
         let table = $('#'+$(this).val()).DataTable()

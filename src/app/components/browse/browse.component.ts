@@ -29,15 +29,14 @@ export class BrowseComponent implements OnInit {
 
   }
 
-  ngOnInit() {
-
+  ngOnInit() {  
+    console.log('MainComponent ngOnInit');
     const controller = new Controller()
     const helper = new Helper()
     const $this = this
     const shared_data = $this.shared_service.getData()
 
     let url_storage;  // save here which nodes and edges to mark while API data is loading
-
 
     //##################################################################################
     // Here we check if there is information (e.g. from session or from search) to load
@@ -52,7 +51,9 @@ export class BrowseComponent implements OnInit {
     /* In case we passed data from search to browse (shared service), set cancer type */
     if (shared_data != undefined) {
       $('#disease_selectpicker').val(shared_data['cancer_type'])
+      console.log(shared_data)
     }
+    console.log($this.shared_service.getData())
     //##################################################################################
 
     let node_table

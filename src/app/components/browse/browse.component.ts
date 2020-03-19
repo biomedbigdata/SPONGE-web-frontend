@@ -263,9 +263,45 @@ export class BrowseComponent implements OnInit {
             }
 
             let column_names = Object.keys(ordered_data[0]);
-            //load mirna info for edges
-
+            //load mirna info for edges map to ensg number
+           // let genes_for_mirna=[]
+           // genes_for_mirna.push(ordered_data)
             
+           
+           controller.get_mirna({
+              'disease_name':disease_trimmed,
+              'ensg_number': nodes,
+              'between':false,
+              'callback': data => {
+                
+                let all_mirna_data = []
+                for (let i=0; i < Object.keys(data).length; i++) {
+                  let mirna_entry = data[i]
+                  // change order of columns alredy in object
+                  let entry_mirna = {}
+                  entry_mirna['Gene 1'] = mirna_entry['interactions_genegene']['gene1']['ensg_number']
+                  entry_mirna['Gene 2'] = mirna_entry['interactions_genegene']['gene2']['ensg_number']
+                  entry_mirna['Hs Nr'] = mirna_entry['mirna']['hs_nr']
+                  entry_mirna['Mir ID'] = mirna_entry['mirna']['mir_ID']
+                  all_mirna_data.push(entry_mirna)
+                }
+
+                let merged = ordered_data.map((item,i) => Object.assign({},item,all_mirna_data[i]))
+              
+
+              console.log(merged);
+          
+                return callback(all_mirna_data)
+                },
+                error: (response) => {
+                  $('#loading_spinner').addClass('hidden')
+                  helper.msg("Something went wrong while loading the miRNAs.", true)
+                }
+              }
+            ) 
+            
+              //mergen von all_mirna_data und ordered_data
+          
 
             $("#interactions-edges-table-container").append(helper.buildTable(ordered_data,'interactions-edges-table', column_names))
             // find index positions from columns to round

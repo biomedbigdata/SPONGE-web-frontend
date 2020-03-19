@@ -562,6 +562,7 @@ export class Helper {
       network.bind('overEdge', (e) => {
         // e.data.edge.color = $this.hover_edge_color
         let data = JSON.parse($('#edge_data').text())
+      //  console.log("miau miau miau")
         for (let entry in data) {
           if (data[entry]['ID'] == e.data.edge.id) {
             // build a table to display json

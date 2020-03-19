@@ -263,6 +263,10 @@ export class BrowseComponent implements OnInit {
             }
 
             let column_names = Object.keys(ordered_data[0]);
+            //load mirna info for edges
+
+            
+
             $("#interactions-edges-table-container").append(helper.buildTable(ordered_data,'interactions-edges-table', column_names))
             // find index positions from columns to round
             var index_correlation = column_names.indexOf('Correlation');

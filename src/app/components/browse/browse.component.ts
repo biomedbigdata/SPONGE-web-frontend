@@ -232,6 +232,7 @@ export class BrowseComponent implements OnInit {
       // API batch limit is 1000 interactions, iterating until we got all batches
       const limit = 1000
       let all_data = []
+      let all_mirna_data = []
       __get_batches_recursive()
 
       function __get_batches_recursive(offset=0) {
@@ -268,41 +269,6 @@ export class BrowseComponent implements OnInit {
            // genes_for_mirna.push(ordered_data)
             
            
-           controller.get_mirna({
-              'disease_name':disease_trimmed,
-              'ensg_number': nodes,
-              'between':false,
-              'callback': data => {
-                
-                let all_mirna_data = []
-                for (let i=0; i < Object.keys(data).length; i++) {
-                  let mirna_entry = data[i]
-                  // change order of columns alredy in object
-                  let entry_mirna = {}
-                  entry_mirna['Gene 1'] = mirna_entry['interactions_genegene']['gene1']['ensg_number']
-                  entry_mirna['Gene 2'] = mirna_entry['interactions_genegene']['gene2']['ensg_number']
-                  entry_mirna['Hs Nr'] = mirna_entry['mirna']['hs_nr']
-                  entry_mirna['Mir ID'] = mirna_entry['mirna']['mir_ID']
-                  all_mirna_data.push(entry_mirna)
-                }
-
-                let merged = ordered_data.map((item,i) => Object.assign({},item,all_mirna_data[i]))
-              
-
-              console.log(merged);
-          
-                return callback(all_mirna_data)
-                },
-                error: (response) => {
-                  $('#loading_spinner').addClass('hidden')
-                  helper.msg("Something went wrong while loading the miRNAs.", true)
-                }
-              }
-            ) 
-            
-              //mergen von all_mirna_data und ordered_data
-          
-
             $("#interactions-edges-table-container").append(helper.buildTable(ordered_data,'interactions-edges-table', column_names))
             // find index positions from columns to round
             var index_correlation = column_names.indexOf('Correlation');
@@ -349,6 +315,51 @@ export class BrowseComponent implements OnInit {
               
             }
   
+            
+
+          controller.get_mirna({
+              'disease_name':disease_trimmed,
+              'ensg_number': nodes,
+              'between':false,
+              'callback': data2 => {
+                all_mirna_data = all_mirna_data.concat(data2)
+                
+                let mirna_data=[]
+                for (let i=0; i < Object.keys(all_mirna_data).length; i++) {
+                  let mirna_entry = data2[i]
+                  // change order of columns alredy in object
+                  let entry_mirna = {}
+                  entry_mirna['Gene 1'] = mirna_entry['interactions_genegene']['gene1']['ensg_number']
+                  entry_mirna['Gene 2'] = mirna_entry['interactions_genegene']['gene2']['ensg_number']
+                  entry_mirna['Hs Nr'] = mirna_entry['mirna']['hs_nr']
+                  entry_mirna['Mir ID'] = mirna_entry['mirna']['mir_ID']
+                  mirna_data.push(entry_mirna)
+                }
+
+               // let merged = ordered_data.map((item,i) => Object.assign({},item,all_mirna_data[i]))
+                
+
+              //console.log(all_mirna_data);
+            //  var res = mirna_data.find( ({ gene1 }) => gene1 === 'ENSG00000007312');
+              console.log(mirna_data)
+              let res  =  mirna_data.find(x => x.gene1 == "ENSG00000007312");
+
+              console.log(res)
+
+                return callback(res)
+                },
+                error: (response) => {
+          
+                  helper.msg("Something went wrong while loading the miRNAs.", true)
+                }
+              }
+            ) 
+          
+              //mergen von all_mirna_data und ordered_data
+    
+
+
+
             $('#edge_data').text(JSON.stringify(ordered_data))
             return callback(edges)
           }

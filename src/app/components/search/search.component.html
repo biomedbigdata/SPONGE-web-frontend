@@ -10,12 +10,11 @@
         <div class="row">
             <!-- start search information  -->
             <div class="col-md-auto">
-                <div class="card" id="card-dim">
-                    <h3 class="card-header text-center" id="card-header">Search Options</h3>
-                    <div class="card-body">
 
-                        <div id="options_gene" class="hidden col">
-                            <!-- <p class="note"> You are currently searching for a gene</p> -->
+                <div class="card" id="card-dim">
+                    <h3 class="card-header text-center" id="card-header">Search Genes</h3>
+                    <div class="card-body">
+                        <div id="options_gene" class="col">
                             <table> 
                                 <td class="td-dim">
                                     <tr>
@@ -28,36 +27,35 @@
                                     </tr>
                                 </td>
                             </table>
+                         </div>
+                        <table class="table table-striped" id="search_key_information">
+                            <thead>
+                              <tr>
+                                <th>ENSG-number</th>
+                                <th>Gene-Symbol</th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <!-- to be filled by ts -->
+                            </tbody>
+                          </table>
+                          <div>
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="significant_results">
                                 <label class="form-check-label italic" for="significant_results">Only significant results</label>
                             </div>
                             <div class="go-btn">
-                                 <button class='btn btn-primary' id='options_gene_go'>Go</button>
-                             </div>
-                         </div>
-                      <div id="options_mirna" class="hidden">
-                            <!-- <p class="note">You are currently searching for miRNA</p> -->
-                            <table>
-                                <td class="td-dim"> 
-                                    <tr>
-                                        <p class='mimat_number'>Enter Mimat-Number or HS-Number: </p>
-                                    </tr>
-                                </td>
-                                <td>
-                                    <tr>
-                                        <input type="text" class="form-control mimat_number input-size autocomplete" id="mirna_search_keys">
-                                    </tr>
-                                </td>
-                            </table>
-                            <div class="go-btn-miRNA">
-                                 <button class='btn btn-primary' id='options_mirna_go'>Go</button>
+                                <button class='btn btn-primary' id='options_gene_go'>Go</button>
                             </div>
-                         </div>
-                     </div>
+                        </div>
+                    </div>
+                    
                 </div>
              </div>
             <!-- End search information -->
+
+
 
 
             <div class="container-fluid col" >
@@ -67,7 +65,7 @@
 
              <div class="row d-flex justify-content-center" id='KMP-plot-container-parent'>
                     <div class="text-center hidden" id="loading_spinner_KMP" >
-                            <div class="spinner-border text-primary" role="status">
+                            <div class="spinner-border" role="status">
                                 <span class="sr-only">Loading the KMPs...</span>
                             </div>
                         </div>

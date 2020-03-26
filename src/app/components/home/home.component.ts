@@ -291,38 +291,30 @@ export class HomeComponent implements OnInit {
 
     processData(mRNAcsv,Coorelationcsv);
 
-  
+    $(document).on('click', '#home_search_key_table .close', function() {
+      $(this).closest('tr').remove()
+    })
+
+    function parse_search_key_table() {
+      let search_key = ''
+      const ensg_numbers = $('#home_search_key_table .ensg_number')
+      for (const ensg_number of ensg_numbers) {
+        search_key += ensg_number.innerText +','
+      }
+      return search_key.slice(0,-1)  // remove last ','
+    }
 
     /* Search function for home component */
     $('#home_search_button').click(() => {
-      let search_key = $('#home_search').val()
-      // replace possible empty spaces
-      search_key = search_key.split(' ').join('')
-      search_key = search_key.slice(0,-1)  // remove last ','
+      let search_key = parse_search_key_table()
 
       // check if search_key is non-empty after removing empty chars
       if (search_key.length == 0) {
         helper.msg("Please select genes in the search field.", true)
         return
       }
-
-      var preSearchKey
-      var tmpString=""
-      
-        if(search_key.includes(",")){
-          search_key=search_key.slice(0,-1)
-          preSearchKey= search_key.split(",")
-          
-          preSearchKey.forEach(geneName => {
-            tmpString += geneName.split("(")[0]+","
-          });
-          
-          preSearchKey= tmpString.slice(0,-1)
-         }else{
-           preSearchKey= search_key.split("(")[0]
-          }
-         search_key=preSearchKey
-        window.open( 'search?search_key='+encodeURIComponent(search_key), '_top')
+      console.log(search_key)
+      window.open( 'search?search_key='+encodeURIComponent(search_key), '_top')
     })
 
     $(function() { 
@@ -332,22 +324,28 @@ export class HomeComponent implements OnInit {
       $( "#home_search" ).autocomplete({
         source: ( request, response ) => {
           let searchString = split(request.term).pop() // only the last item in list
+          // search string has to have min. length of 3
           if (searchString.length > 2) {
+            // if search string is engs number, we want to wait with the search until we don't have to load ALL ensg number with sth like "ENSG00..."
+            if (searchString.startsWith('ENSG')) {
+              if (searchString.length < 12) {
+                return
+              }
+            }
+
             controller.search_string({
               searchString: searchString,
               callback: (data) => {
                 // put all values in a list
-                let values = []
-                let values2=[]
-                for (let entry in data) {
-                  if (data[entry]['gene_symbol'] != "" && data[entry]['gene_symbol'] != null) {
-                    values.push(data[entry]['gene_symbol'])
-                  } else {
-                    values.push(data[entry]['ensg_number'])
+                let values=[]
+                for (let entry of data) {
+                  //  we don't support seach for miRNAs
+                  if ('ensg_number' in entry) {
+                    const gene_symbol = entry['gene_symbol'] ? `(${entry['gene_symbol']})` : ''
+                    values.push(`${entry['ensg_number']} ${gene_symbol}`)
                   }
-                  values2.push(data[entry]['gene_symbol']+" ("+data[entry]['ensg_number']+")")             
                 }
-               response(values2)
+               response(values)
                
               },
               error: () => {
@@ -367,17 +365,25 @@ export class HomeComponent implements OnInit {
           return false;
         },
          select: function( event, ui ) {
-           var terms = split( this.value );
-           // remove the current input
-           terms.pop();
-           // add the selected item
-           terms.push( ui.item.value );
-           // add placeholder to get the comma-and-space at the end
-           terms.push( "" );
-           this.value = terms.join( ", " );
+            let terms = ui.item.value.split(' ');
 
-           return false;
-         }
+            if (terms[1].length && terms[1][0] == '(') {
+              terms[1] = terms[1].substring(1, terms[1].length-1);
+            }
+            // append searched key to table
+            $('#home_search_key_table tbody').append(
+              `
+              <tr>
+                <td class="ensg_number">${terms[0]}</td>
+                <td class="full-width">${terms[1]}</td>
+                <td><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
+              </tr>
+              `
+            )
+            // reset search field
+            this.value = ''
+            return false;
+        }
       });
     });
 

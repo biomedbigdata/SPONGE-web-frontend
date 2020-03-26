@@ -57,8 +57,8 @@
                
                 <p class="card-text">You can enter a gene symbol, ENSG number or miRNA to search in the SPONGE database for all corresponding interactions.
                     <br> On the next side you will find tables of the found cancer sets. You can search those tables for other genes/miRNAs or create 
-                    a network from those table entries by clicking the "Show as Network" Button.  <br><br>
-                    Network-Features: <br>
+                    a network from those table entries by clicking the "Show as Network" Button.  You can also select some entries and export only those to the network.<br><br>
+                    Search Features: <br>
                     
                 </p>
 
@@ -73,15 +73,19 @@
                     <tbody>
                       <tr >
                         <th scope="row">Search Box</th>
-                        <td>Survival Analysis will be displaied for the Node</td>
-                     
-              
+                        <td>Search for a ENSG number or Gene Symbol. Check the box to only obtain significant results</td>
                       </tr>
                       <tr>
                         <th scope="row">Result Boxes</th>
-                        <td>Values such as mscor, pvalue and gene ids</td> <!--browser version-->
-                        
-                        
+                        <td>Lists the cancer datasets, which contain interactions with the searched value. The tables visualize values such as mscor, pvalue, correlation and ids</td> <!--browser version-->
+                      </tr>
+                      <tr>
+                        <th scope="row">Options Button</th>
+                        <td>Set a range for the Mscore or P-value. You dont have to submit your entry, it will be applied automatically</td> <!--browser version-->
+                      </tr>
+                      <tr>
+                        <th scope="row">Show as Network Button</th>
+                        <td>Exports selected table entries or default ones to create a interaction network.</td>
                       </tr>
                       
                     </tbody>
@@ -96,9 +100,8 @@
               <h3 class="card-header" id="card-header" style="text-align: center;">Browse functionalities explained</h3>
               <div class="card-body">
                
-                <p class="card-text">You can enter a gene symbol, ENSG number or miRNA to search in the SPONGE database for all corresponding interactions.
-                    <br> On the next side you will find tables of the found cancer sets. You can search those tables for other genes/miRNAs or create 
-                    a network from those table entries by clicking the "Show as Network" Button.  <br><br>
+                <p class="card-text"> On the browse site you can create different interaction networks and investigate which genes/miRNAs affect each other.
+                  The node sizes and edge thicknes is corresponding to the Mscore and node degree. When loading a new cancer set, also a expression heatmap will be produced. <br>
                     Network-Features: <br>
                     
                 </p>
@@ -113,17 +116,38 @@
                     </thead>
                     <tbody>
                       <tr >
-                        <th scope="row">Double Click on a Node</th>
-                        <td>Survival Analysis will be displaied for the Node</td>
-                     
-              
+                        <th scope="row">Title Banner Select</th>
+                        <td>Select one of the cancer set, which should be used for a network</td>              
+                      </tr>
+                      <tr >
+                        <th scope="row">Click on a Node</th>
+                        <td>Survival Analysis (Kaplan-Meier Plot) will be displaied for the Node</td>              
                       </tr>
                       <tr>
                         <th scope="row">Hover over Node/Edge</th>
-                        <td>Values such as mscor, pvalue and gene ids</td> <!--browser version-->
-                        
-                        
+                        <td>Values such as Mscor, pvalue, betweenes, correlation and gene ids will be displayed in a side table</td>
                       </tr>
+                      <tr>
+                        <th scope="row">Search under network</th>
+                        <td>Select a ENSG number or interaction of interest (number) and it will be colored and focused on in the network</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Save as</th>
+                        <td>You can save & download the plot as .jpg, .png or .svg.</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Reset camera</th>
+                        <td>Reset the viewpoint of the network after zooming or focusing on a node</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Force atlas 2/ start layout</th>
+                        <td>Start a layout for a better visualization of the network</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Reset Colors</th>
+                        <td>Deselect clicked nodes</td>
+                      </tr>
+
                       
                     </tbody>
                   </table>
@@ -134,7 +158,37 @@
     
     </div>
     <p></p>
-            
+    <div class="card shadow" id="contact">
+      <h3 class="card-header" id="card-header">Browse Sidebar</h3>
+      <div class="card-body">
+     
+          <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Nodes & Edges</th>
+                  <th scope="col">Run Information & Settings</th>
+                  <th scope="col">Data of visualized run</th>
+                  <th scope="col">Download original data</th>
+             
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="card-body-dark">
+                  <td scope="row">Here you can find tables of the nodes and edges of the network with detailed information. They are in the same style as the search table and also hold the same functionalities</td>
+                  <td>This section is for further configuration of the selected cancer set. Define a value to sort by, set a cutoff for the node degree and define the number of nodes with the limit </td>
+                  <td>Inspect the exact properties of the current network </td>
+                  <td>Links you to the TCGA website</td>
+                
+        
+                </tr>
+               
+              </tbody>
+            </table>
+          </div>
+        </div>
+     
+
+     <p></p>
         <div class="card shadow" id="contact">
           <h3 class="card-header" id="card-header">Browser Compabilities</h3>
           <div class="card-body">

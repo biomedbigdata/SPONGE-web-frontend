@@ -59,11 +59,23 @@ export class SearchComponent implements OnInit {
         }
         search_key = decodeURIComponent(params.search_key).split(',');
       });
+
+    function parse_search_key_table() {
+      let search_key = ''
+      const ensg_numbers = $('#search_key_information .ensg_number')
+      for (const ensg_number of ensg_numbers) {
+        search_key += ensg_number.innerText +','
+      }
+      search_key = search_key.slice(0,-1)
+      return  search_key.split(',') // remove last ','
+    }
     
     $('#options_gene_go').click( () => {
       pValue_current = $('#significant_results').is(':checked') ? pValue : 1
 
-      search_key = $('#gene_search_keys').val().replace(',', '').split(' ')
+      search_key = parse_search_key_table()
+      console.log("search ley")
+      console.log(search_key)
       // remove possible ''
       search_key = search_key.filter(item => item);
       if (search_key[0] == '') {
@@ -74,21 +86,25 @@ export class SearchComponent implements OnInit {
       }    
     })
 
-    $('#options_mirna_go').click( () => {
-      search_key = $('#mirna_search_keys').val().split(' ').join('')
-      // remove last char if it is ','
-      search_key = search_key[-1] == ',' ? search_key.slice(0, -1) : search_key
-      if (search_key[0] == '') {
-        helper.msg("Please select a search gene", false)
-      } else {
-        search(limit)
-      }
-    })
+    // $('#options_mirna_go').click( () => {
+    //   search_key = $('#mirna_search_keys').val().split(' ').join('')
+    //   // remove last char if it is ','
+    //   search_key = search_key[-1] == ',' ? search_key.slice(0, -1) : search_key
+    //   if (search_key[0] == '') {
+    //     helper.msg("Please select a search gene", false)
+    //   } else {
+    //     search(limit)
+    //   }
+    // })
     
     // set significant result checkbox to true by default
     $('#significant_results').prop('checked', true)
 
     search(limit)
+
+    $(document).on('click', '#search_key_information .close', function() {
+      $(this).closest('tr').remove()
+    })
 
 
     function draw_cancer_type_accordion() {
@@ -221,7 +237,7 @@ export class SearchComponent implements OnInit {
       $('#key_information').empty()
       $('#disease_accordion').empty()
       $('#network-container').empty()
-
+      $('#search_key_information tbody').empty()
       $('#plots').empty()
 
       /* search_key is defined */
@@ -237,9 +253,16 @@ export class SearchComponent implements OnInit {
           [type]: search_key,
           minCountSign: minCountSign,
           error: (data) => {
-            // no significant interactions found, try again for all interactions
-            $('#significant_results').prop('checked', false)
-            search(limit)
+            
+            if ($('#significant_results').prop('checked')) {
+              // no significant interactions found, try again for all interactions
+              $('#significant_results').prop('checked', false)
+              search(limit)
+            } else {
+              helper.msg('No interactions were found for you search genes.')
+              $('#loading_spinner').addClass('hidden')
+            }
+
           },
           callback: (data) => {
             count_object = data
@@ -281,43 +304,39 @@ export class SearchComponent implements OnInit {
                 }, 1000)
               });
             }
-            
-            // check if key is ENSG number
-            if (search_key[0].startsWith('ENSG')) {
-              if(!$('#options_mirna').hasClass('hidden')){
-                $('#options_mirna').addClass('hidden')
-              }
-              $('#options_gene').removeClass('hidden')
-              $('#gene_search_keys').val(search_key.join(', '))
-            
-            } else if (search_key[0].startsWith('MIMAT')) {
-              if(!$('#options_gene').hasClass('hidden')){
-                $('#options_gene').addClass('hidden')
-              }
-              // key is MIMAT number
-              $('#options_mirna').removeClass('hidden')
-              $('#mirna_search_keys').val(search_key.join(', '))
-              
-            } else if (search_key[0].startsWith('hsa-')) {
-              if(!$('#options_gene').hasClass('hidden')){
-                $('#options_gene').addClass('hidden')
-              }
-              // key is hsa number
-              $('#options_mirna').removeClass('hidden')
-              $('#mirna_search_keys').val(search_key.join(', '))
-              
-            } else {
-              if(!$('#options_mirna').hasClass('hidden')){
-                $('#options_mirna').addClass('hidden')
-              }
-              // key is gene symbol
-              $('#options_gene').removeClass('hidden')
-              $('#gene_search_keys').val(search_key.join(', '))
-            }  
 
             build_accordion()
           }
         })
+        
+        // display gene key information like ENSG-numbers etc.
+        for (const key of search_key) {
+          controller.search_string(
+            {
+              searchString: key,
+              callback: function(data) {
+                // find correct result
+                for (const result of data) {
+                  if (result['ensg_number'] === key || result['gene_symbol'] === key) {
+                    // display information table
+                    $('#search_key_information tbody').append(
+                      `
+                      <tr>
+                        <td class="ensg_number">${result['ensg_number']}</td>
+                        <td>${result['gene_symbol']}</td>
+                        <td><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
+                      </tr>
+                      `
+                    )
+                    break
+                  }                  
+                }
+              }
+            }
+          )
+        }
+
+
       }
     }
 
@@ -374,7 +393,7 @@ export class SearchComponent implements OnInit {
           }
           var mscore_min = parseFloat($('#mscore_min_' + table_id).val().toString());
           var mscore_max = parseFloat($('#mscore_max_' + table_id).val().toString());
-          var mscore = parseFloat(data[5]) || 0; // use data for the mscor column
+          var mscore = parseFloat(data[6]) || 0; // use data for the mscor column
           if ((isNaN(mscore_min) && isNaN(mscore_max)) ||
             (isNaN(mscore_min) && mscore <= mscore_max) ||
             (mscore_min <= mscore && isNaN(mscore_max)) ||
@@ -390,7 +409,7 @@ export class SearchComponent implements OnInit {
           }
           var pvalue_min = parseFloat($('#pvalue_min_' + table_id).val().toString());
           var pvalue_max = parseFloat($('#pvalue_max_' + table_id).val().toString());
-          var pvalue = parseFloat(data[6]) || 0; // use data for the pvalue column
+          var pvalue = parseFloat(data[7]) || 0; // use data for the pvalue column
           if ((isNaN(pvalue_min) && isNaN(pvalue_max)) ||
             (isNaN(pvalue_min) && pvalue <= pvalue_max) ||
             (pvalue_min <= pvalue && isNaN(pvalue_max)) ||
@@ -538,8 +557,8 @@ export class SearchComponent implements OnInit {
           "</button>" +
           "<button class='export_nodes btn btn-primary button-margin' style='float: left;' value="+table_id+">Show as Network</button>"+
           `
-          <div class="form-check button-margin inline-block">
-            <input type="checkbox" class="form-check-input" id="interactions_to_all_search_keys_`+ table_id +`">
+          <div class="form-check button-margin inline-block ${search_key.length>1?'': 'hidden'}">
+            <input disabled type="checkbox" class="form-check-input" id="interactions_to_all_search_keys_`+ table_id +`">
             <label class="form-check-label" for="interactions_to_all_search_keys_`+ table_id +`">Show only interactions to all search genes</label>
           </div>
           `+
@@ -547,7 +566,7 @@ export class SearchComponent implements OnInit {
           "<div class='collapse' id='control_" + table_id + "' style='margin-bottom:20px;'>" +
           "<div class='card card-body' style='border-radius:10px; background-color: #004085; background:linear-gradient(45deg, #043056, #004085, #043056); color:white'>" +
           "<div>" +
-          "<p>Set filter for mscor</p>" +
+          "<p>Set filter for MScor</p>" +
           "<span>Minimum: </span><input type='text' style='border-radius:10px; margin-right: 50px;' id='mscore_min_" + table_id + "' name='mscore_min'>&nbsp;" +
           "<span>Maximum: </span><input type='text' style='border-radius:10px; margin-right: 50px;' id='mscore_max_" + table_id + "' name='mscore_max'>" +
           "</div>" +
@@ -625,7 +644,6 @@ export class SearchComponent implements OnInit {
           this_table.draw()
         }
       });
-
       
       // load table when accordion tab is opened and table has not been loaded already
       $(document).on('click', '.btn.btn-link.collapsed', function() {
@@ -653,12 +671,12 @@ export class SearchComponent implements OnInit {
         let nodes_marked = parse_node_data(table.rows('.selected', { filter : 'applied'}).data(), params_genes_keys).map(function(node) {return node.id})
 
         let ensg_numbers:string[] = nodes.map(function(node) {return node.id})
-
-        console.log(table.data().length)
-        if (table.data().length > 50) {
-          helper.msg("Please apply further filtering to your data. Loading more than 50 interactions in the graph can lead to problems.")
+        
+        if (table.rows({ filter : 'applied'}).data().length > 50) {
+          helper.msg("Please apply further filtering to your data (max. 50 interactions are recommended for the network).")
           return
         }
+
         // append search note to network
         for (const [index, key] of search_key.entries()) {
           controller.search_string(
@@ -734,10 +752,10 @@ export class SearchComponent implements OnInit {
         }
 
         // KEEP ORDER OF THESE INTERACTIONS as it is how it is displayed in webpage
-        interaction_info['Key'] = interaction[gene_as_key]['ensg_number'] // store information which gene was key to get intersection of all keys
+        interaction_info['Search Gene'] = interaction[gene_as_key]['ensg_number'] // store information which gene was key to get intersection of all keys
         interaction_info['ENSG Number'] = interaction[gene_to_extract]['ensg_number']
         interaction_info['Gene Symbol'] = interaction[gene_to_extract]['gene_symbol'] !== null ? interaction[gene_to_extract]['gene_symbol'] : "-"
-        interaction_info['Gene Type'] = interaction[gene_to_extract]['gene_type']
+        interaction_info['Gene Type'] = interaction[gene_to_extract]['gene_type'].split('_').join(' ')
         interaction_info['Chromosome'] = interaction[gene_to_extract]['chromosome_name']
         interaction_info['Correlation'] = interaction['correlation']
         interaction_info['MScor'] = interaction['mscor']
@@ -797,7 +815,9 @@ export class SearchComponent implements OnInit {
         )}
   
         push_interaction_filters(table_id)
-        table = $("#" + table_id).DataTable({
+
+        // define table settings based on search key length
+        let datatable_settings = {
           orderCellsTop: true,
           drawCallback: function( settings ) {
             var api = this.api();
@@ -807,16 +827,32 @@ export class SearchComponent implements OnInit {
                 $("#" + table_id + '_next').removeClass('disabled')
               }
             }
-          },
-          columnDefs: [
-              // hide "Key" Column
-              {
-                  "targets": [ 0 ],
-                  "visible": false,
-                  "searchable": true
-              }
-            ]
-        })
+          }
+        }
+
+        if (search_key.length > 1) {
+          // grouping by search key
+          datatable_settings['order'] =  [[0, 'asc']]
+          // datatable_settings['rowGroup'] = {
+          //     dataSrc: [0]
+          // }
+          // datatable_settings['columnDefs'] = [{
+          //   targets: [ 0 ],
+          //   visible: false
+          // }]
+        } else {
+          // hide "Key" Column if we have just 1 search column
+          datatable_settings['columnDefs'] = [
+            {
+                "targets": [ 0 ],
+                "visible": false,
+                "searchable": true
+            }
+          ]
+        }
+
+        table = $("#" + table_id).DataTable(datatable_settings)
+
         helper.colSearch(table_id, table)
   
         $('#mscore_min_' + table_id + ', #mscore_max_' + table_id + ', #pvalue_min_' + table_id + ', #pvalue_max_' + table_id).keyup(() => {
@@ -843,17 +879,18 @@ export class SearchComponent implements OnInit {
         }
       }
 
+      // enable intersection search if more than 1 gene key was found
+      if ($('#'+table_id).DataTable().column(0).data().unique().length > 1) {
+        $('#interactions_to_all_search_keys_'+table_id).prop("disabled", false)
+      } else {
+        // else show info that just one search key was found 
+        $('#interactions_to_all_search_keys_'+table_id).prop("title", "All the interactions belong to just one search gene.")
+      }
+
       if (table_complete) {
         // remove loading button for more interactions
         $('#collapse_' + disease_trimmed).find('.card-body-table').find('.spinner-more').remove()
 
-        // only display entries that are related to all search genes
-        // for (let gene of parsed_search_result['diseases'][disease]) {
-        //   let gene_search_result = $('#'+table_id).DataTable().search(gene['ENSG Number'])
-        //   if (gene_search_result.length == 2) {
-        //     console.log(gene_search_result)
-        //   }
-        // }
       }
     }
 
@@ -864,22 +901,29 @@ export class SearchComponent implements OnInit {
       $( ".autocomplete" ).autocomplete({
         source: ( request, response ) => {
           let searchString = split(request.term).pop() // only the last item in list
+
+          // search string has to have min. length of 3
           if (searchString.length > 2) {
+            // if search string is engs number, we want to wait with the search until we don't have to load ALL ensg number with sth like "ENSG00..."
+            if (searchString.startsWith('ENSG')) {
+              if (searchString.length < 12) {
+                return
+              }
+            }
+            
             controller.search_string({
               searchString: split(request.term).pop(), // only the last item in list
               callback: (data) => {
                 // put all values in a list
-                let values = []
-                let values2=[]
-                for (let entry in data) {
-                  if (data[entry]['gene_symbol'] != "" && data[entry]['gene_symbol'] != null) {
-                    values.push(data[entry]['gene_symbol'])
-                  } else {
-                    values.push(data[entry]['ensg_number'])
-                  }    
-                  values2.push(data[entry]['gene_symbol'])              
+                let values=[]
+                for (let entry of data) {
+                  //  we don't support seach for miRNAs
+                  if ('ensg_number' in entry) {
+                    const gene_symbol = entry['gene_symbol'] ? `(${entry['gene_symbol']})` : ''
+                    values.push(`${entry['ensg_number']} ${gene_symbol}`)
+                  }           
                 }
-                response(values2)
+                response(values)
               },
               error: () => {
                 console.log(request)
@@ -892,15 +936,24 @@ export class SearchComponent implements OnInit {
           return false;
         },
         select: function( event, ui ) {
-          var terms = split( this.value );
-          // remove the current input
-          terms.pop();
-          // add the selected item
-          terms.push( ui.item.value );
-          // add placeholder to get the comma-and-space at the end
-          terms.push( "" );
-          this.value = terms.join( ", " );
-          return false;
+          let terms = ui.item.value.split(' ');
+
+          if (terms[1].length && terms[1][0] == '(') {
+            terms[1] = terms[1].substring(1, terms[1].length-1);
+          }
+          // append searched key to table
+          $('#search_key_information tbody').append(
+            `
+            <tr>
+              <td class="ensg_number">${terms[0]}</td>
+              <td >${terms[1]}</td>
+              <td><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
+            </tr>
+            `
+          )
+          // reset search field
+          this.value = ''
+          return false
         }
       });
     });

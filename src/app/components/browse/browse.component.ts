@@ -436,7 +436,11 @@ export class BrowseComponent implements OnInit {
               if(value == null){
                 value = 'Not defined'
               }
-              
+              console.log(key)
+              if (key == 'ks') {
+                value = value.substring(4, value.length-1)
+              } 
+
               var table_entry = document.createElement("tr")
               table_entry.innerHTML = helper.uppercaseFirstLetter( key)
               table_entry.setAttribute("style","margin-right:2px")
@@ -471,6 +475,9 @@ export class BrowseComponent implements OnInit {
             $.when(helper.make_network(this.disease_trimmed, nodes, edges, node_table, edge_table)).done( (network_data) => {
               network = network_data['network']
               session = network_data['session']
+
+              // trigger force atlas 2 
+              $('#toggle_layout').click()
             })
 
             $('#export_selected_edges').click(() => {

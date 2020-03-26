@@ -34,6 +34,7 @@ export class Session {
     return document.getElementsByTagName('base')[0].href;
   }
   public update_url() {
+    return
     let cancer:string
     // ALL
     cancer = $('#disease_selectpicker').val().toString();

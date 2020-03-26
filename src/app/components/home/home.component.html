@@ -21,19 +21,22 @@
                                             <i class="fa fa-info-circle" data-toggle="popover_search_info" title="Search Information"
                                             data-content="Enter a list or single ENSG-ID/name  of a gene or miRNA to get a list of corresponding RNA interactions between this gene and different other genes in the datasets. E.g.: ENSG00000179915 or NRXN1"></i>
                                     
-                                        
-                                         
                                     </div>
                                     <form>
                                         <div class="input-group">
                                             <div id="home_search_container">
-                                                <textarea autosize placeholder="PTENP1 (ENSG00000237984), VAPA (ENSG00000101558), " [minRows]="1" [maxRows]="" id="home_search" class="form-control" name="home_search"></textarea>
+                                                <input id="home_search" class="form-control" name="home_search">
                                             </div>
-                                            
-
                                             <div class="input-group-append">
                                                 <button class="btn btn-outline-secondary" type="button" id="home_search_button">Search   <i class="glyphicon fa fa-search"></i></button>
                                             </div>
+                                        </div>
+                                        <div>
+                                            <table class="table" id="home_search_key_table">
+                                                <tbody>
+                                                   
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </form>
                             </div>

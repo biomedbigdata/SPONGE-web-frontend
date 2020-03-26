@@ -29,21 +29,22 @@ export class Helper {
           return edges;
         });
       } catch {
-        console.log("adjacent_edges exists")
+        //console.log("adjacent_edges exists")
       }
 
     }
     
     default_node_color = '#052444'
     default_edge_color = '#0000FF'
-    subgraph_edge_color = '#013220'
+    subgraph_edge_color = '#013220' //'#013220'
     subgraph_node_color = '#920518'
     hover_edge_color =  '#228B22'
     hover_node_color = '#228B22'
     edge_color_pvalues_bins = {
-      0.8 : '#fdbe85',
-      0.4 : '#f87f2c',
-      0.05 : '#c94503'
+      1: '#fae4cf',
+      0.8: '#fdbe85',
+      0.4: '#f87f2c',
+      0.05: '#c94503'
     }
 
     controller = new Controller()
@@ -187,6 +188,10 @@ export class Helper {
       })
     }
 
+    public destroy_KMPs() {
+      $('#KMP-plot-container-parent #plots').empty()
+    }
+
     public load_KMP(ensgList,clicked_Node,disease_name) 
     {
       // start loading data
@@ -197,18 +202,12 @@ export class Helper {
       if(dn == "All"){
         dn = encodeURIComponent($('#network-plot-container').val().toString())
         }
-     
-      var test = ensgList[0]//['ENSG00000179915'];
-      
+           
       //Rauslöschen des KMP-Plots wenn Node deselected wird
       if($('#myDiv_'+clicked_Node).length >0){
         $('#myDiv_'+clicked_Node).remove()
         $('#loading_spinner_KMP').addClass('hidden')
       }
-
-      
-
-
       
     for(let $o=0; $o<ensgList.length;$o++){
           
@@ -261,7 +260,7 @@ export class Helper {
            $('#loading_spinner_KMP').addClass('hidden')
       
           },
-          error: (response2) => {
+          error: (repsonse) => {
           this.msg("Something went wrong creating the survival analysis.", true)
           $('#loading_spinner_KMP').addClass('hidden')
           }
@@ -602,7 +601,6 @@ export class Helper {
         if (clickNode_clicked == false) {
           nodeSingleClick(e);
           clickNode_clicked = true
-          console.log("here")
           setTimeout( () => {
             clickNode_clicked = false
           }, 500)
@@ -611,7 +609,8 @@ export class Helper {
       })
 
       function nodeDoubleClick(e) {
-        $this.clear_colors(network)
+        //$this.clear_colors(network)
+        $this.grey_edges(network)
 
         var nodeId = e.data.node.id;
         network.graph.adjacentEdges(nodeId).forEach( (ee) => {
@@ -647,8 +646,16 @@ export class Helper {
        // set node color
        if (e.data.node.color != $this.subgraph_node_color) {
          e.data.node.color = $this.subgraph_node_color
+         // mark node in table
+         if (node_table) {
+          $this.mark_nodes_table(node_table, nodeId)
+         }
        } else {
          e.data.node.color = $this.default_node_color
+         // unmark node in table
+         if (node_table) {
+          $this.unmark_nodes_table(node_table, nodeId)
+         }
        }
        network.refresh()    
 
@@ -657,13 +664,14 @@ export class Helper {
        // network was altered, update url
        session.update_url()
 
+       // load KMP
        $this.load_KMP(session.get_selected()['nodes'],nodeId,selected_disease) 
-
+       // show KMP
        if($('#plots').hasClass('hidden')){
          $('#plots').removeClass('hidden') 
        }
-      }
 
+      }
 
       function searchNode(node_as_string) {
         /*
@@ -813,10 +821,34 @@ export class Helper {
       $('#toggle_layout').click( () => {
         if ((network.supervisor || {}).running) {
           network.killForceAtlas2();
-          document.getElementById('toggle_layout').innerHTML = 'Start layout';
+          //document.getElementById('toggle_layout').innerHTML = 'Start layout';
         } else {
-          network.startForceAtlas2({worker: true, slowDown: 100});
-          document.getElementById('toggle_layout').innerHTML = 'Stop layout';
+          const config = {
+            // algorithm config
+            linLogMode: false,
+            outboundAttractionDistribution: true,
+            adjustSizes: false,
+            edgeWeightInfluence: 1,
+            scalingRatio: 1,
+            strongGravityMode: false,
+            gravity: 3, // attracts nodes to the center. Prevents islands from drifting away
+            barnesHutOptimize: false,
+            barnesHutTheta: 0.5,
+            slowDown: 5,
+            startingIterations: 1,
+            iterationsPerRender: 1,
+
+            // Supervisor config
+            worker: true,
+          }
+          network.startForceAtlas2(config);
+          //document.getElementById('toggle_layout').innerHTML = 'Stop layout';
+          $('#toggle_layout').attr('disabled', true)
+
+          setTimeout(function() {
+            $('#toggle_layout').attr('disabled', false)
+            $('#toggle_layout').click()
+          }, 2000)
         }
       });  
       
@@ -845,6 +877,14 @@ export class Helper {
       return this.nodeIDclicked
     }
 
+    public grey_edges(network) {
+      network.graph.edges().forEach(
+        (ee) => {
+          ee.color = '#e0dfde'
+        }
+      )
+    }
+
     public clear_colors(network) {
       // load edge elements to find out p value, color edges based on p value
       let data = JSON.parse($('#edge_data').text())
@@ -859,6 +899,9 @@ export class Helper {
         }
       )
       network.refresh()
+
+      // also remove all KMP plots
+      this.destroy_KMPs()
     }
 
     public clear_table(table) {
@@ -872,7 +915,19 @@ export class Helper {
     public mark_nodes_table(table, nodes:string[]) {
       table.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
         if (nodes.length && nodes.includes(this.data()[0])) {
-          $(this.node()).addClass('selected')
+          if (!$(this.node()).hasClass('selected')){
+            $(this.node()).addClass('selected')
+          }
+        }
+      });
+    }
+
+    public unmark_nodes_table(table, nodes:string[]) {
+      table.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+        if (nodes.length && nodes.includes(this.data()[0])) {
+          if ($(this.node()).hasClass('selected')) {
+            $(this.node()).removeClass('selected')
+          }
         }
       });
     }
@@ -896,6 +951,7 @@ export class Helper {
     }
 
     public mark_edges_network(network, edges:string[], based_on_id=false) {
+      this.grey_edges(network)
       // find selected edges in graph and mark them
       if (based_on_id) {
         network.graph.edges().forEach(
@@ -917,8 +973,6 @@ export class Helper {
               if (edge_nodes.includes(selected_edge[0]) && edge_nodes.includes(selected_edge[1])){
                 ee.color = this.subgraph_edge_color
                 break
-              } else {
-                ee.color = this.default_edge_color
               }
             }
           }

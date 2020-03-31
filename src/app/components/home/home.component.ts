@@ -73,13 +73,13 @@ export class HomeComponent implements OnInit {
             name: 'Count of significant interactions',
             marker: {
              // color: 'rgb(94, 48, 201)',
-              color:  'rgb(172, 27, 99)',
+              color:  'rgb(19,63,103)',//'rgb(172, 27, 99)',
               opacity: 1
             }
           };
          
     //original
-    var data = [miRNAs2, correlations_pred,correlations_sig];
+    var data = [correlations_pred,correlations_sig];
    //unsignifikant signifikant
   //  var data = [ correlations_pred,correlations_sig];
 
@@ -103,7 +103,7 @@ export class HomeComponent implements OnInit {
       width: 900,
       height: 800,
       margin: {
-        l: 150,
+        l: 160,
         r: 100,
         b: 200,
         t: 100,
@@ -111,8 +111,8 @@ export class HomeComponent implements OnInit {
       },
       showlegend: true,
       legend: {
-        x:0,
-        y:1,
+        x:0.13,
+        y:1.04,
         "orientation": "h"},
       hoverlabel:{
         namelength:50

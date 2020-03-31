@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
             shared_mirnas.push(disease['count_shared_miRNAs'])
 
           }
-
+         
           var miRNAs2=  {
             x: dnl,
             y: shared_mirnas,
@@ -78,8 +78,14 @@ export class HomeComponent implements OnInit {
             }
           };
          
-
+    //original
     var data = [miRNAs2, correlations_pred,correlations_sig];
+   //unsignifikant signifikant
+  //  var data = [ correlations_pred,correlations_sig];
+
+    //signifikant shared
+   // var data = [ miRNAs2,correlations_sig];
+
     var layout = {
       title: 'SPONGE results for each pair of genes',
       titlefont: {
@@ -91,7 +97,7 @@ export class HomeComponent implements OnInit {
         tickangle: -45,
         //hoverformat: '.3f'
       },  
-     // yaxis:{hoverformat: '.3f'},
+      yaxis:{type: 'log'},
       barmode: 'group',
       autosize: false,
       width: 900,

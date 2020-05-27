@@ -1,5 +1,7 @@
 import * as $ from "jquery";
 import { ConditionalExpr } from '@angular/compiler';
+import { resolve } from 'dns';
+import { rejects } from 'assert';
 
 export class Controller {
 
@@ -591,7 +593,8 @@ export class Controller {
                 config: {
                     gene_symbol: string[], 
                     callback: (response) => any,
-                    error?: (response) => any
+                    error?: (response) => any,
+                    
                 })
         {
                     let request = Controller.API_ENDPOINT+Controller.GENE_ONTOLOGY
@@ -603,15 +606,58 @@ export class Controller {
                         request += "&gene_symbol="+config.gene_symbol
                     }
                     console.log(request)
+     
                     $.getJSON(request,
                         response => {
-                            return config.callback(response)
+                            if(response.status != "202"){
+                          //  return config.callback(response)
+                            }
                         }
-                    ).fail(
-                        response => {
-                            return config.error(response)
-                        })
+                    ).then(res =>{
+                        if(res.status != "202"){
+                            return config.callback(res)
+                            }
+                    }).fail(
+                        res => {
+                            return config.callback(res)
+                        })    
+                    
         }
+
+        public get_GO_Promis(
+            config: {
+                gene_symbol: string[],         
+                
+            })
+    {
+        return new Promise((resolve, rejects) => {
+            let request = Controller.API_ENDPOINT+Controller.GENE_ONTOLOGY
+           // if (Object.keys(config).length > 1) {
+                request += '?gene_symbol='+config.gene_symbol
+            //}else if
+            
+           //  (config.gene_symbol != undefined) {
+            //    request += "&gene_symbol="+config.gene_symbol
+          //  }
+            console.log(request)
+
+            $.getJSON(request,
+                response => {
+                    if(response.status != "202"){
+                    return resolve(response)
+                    }
+                }
+            ).fail(
+                res => {
+                    return rejects(res)
+                })    
+        })
+                
+                
+    }
+
+      
+        
 
         public get_Hallmark(
             config: {

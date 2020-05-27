@@ -462,7 +462,7 @@ export class SearchComponent implements OnInit {
         let html_table = helper.buildTable(
           parsed_search_result['diseases'][disease],
           table_id,
-          Object.keys(parsed_search_result['diseases'][disease][0])
+          Object.keys(parsed_search_result['diseases'][disease][0]),""
         )
         $('#collapse_' + disease_trimmed).find('.card-body-table').html(html_table)
 
@@ -913,7 +913,7 @@ export class SearchComponent implements OnInit {
     function parse_cerna_response_to_table(response, table_id, table_complete=false) {
 
       let table
-
+      let gene_names_for_GO = []
       let disease = response[0]["run"]["dataset"]["disease_name"]
       let disease_trimmed = disease.split(' ').join('').replace('&', 'and')
       parsed_search_result = {}
@@ -949,6 +949,7 @@ export class SearchComponent implements OnInit {
         if (!(disease in parsed_search_result['diseases'])) {
           parsed_search_result['diseases'][disease] = []
         }
+      
 
         // KEEP ORDER OF THESE INTERACTIONS as it is how it is displayed in webpage
         interaction_info['Search Gene'] = interaction[gene_as_key]['ensg_number'] // store information which gene was key to get intersection of all keys
@@ -967,7 +968,10 @@ export class SearchComponent implements OnInit {
 //        interaction_info['miRNA'] = ''
 
         parsed_search_result['diseases'][disease].push(interaction_info)
-
+        if(interaction[gene_to_extract]['gene_symbol'] !==null){
+        //create list of gene names for Gene Ontology api request
+        gene_names_for_GO.push(interaction[gene_to_extract]['gene_symbol'])
+        }
       }); // end for each
 
       /*********** check if table for this disease already exists, if so append, else create new **********/
@@ -997,11 +1001,67 @@ export class SearchComponent implements OnInit {
         // key_information_sentence += " on chromosome " + key_information['chromosome']
   
         // $('#key_information').html(key_information_sentence)
-  
+       
+               
+      let geneSymbolToGO = []
+
+     
+          
+        controller.get_GO(
+          {
+            gene_symbol: gene_names_for_GO,
+            callback: function(response) {
+              let tmp=[]
+              
+
+              var geneSymbol = "first"
+              for (let elem of response) {
+               
+               if(geneSymbol != elem.gene.gene_symbol){
+                if(tmp.length>0){
+                  geneSymbolToGO[geneSymbol] =tmp
+                  tmp = []
+                }
+                  geneSymbol = elem.gene.gene_symbol
+                 
+                  
+                  tmp.push(elem.gene_ontology_symbol)
+                 // geneSymbolToGO[geneSymbol] = elem.gene_ontology_symbol; 
+                  //hinzuügen der arraylist zu map
+               }else{
+                tmp.push(elem.gene_ontology_symbol)
+               // geneSymbolToGO[geneSymbol].push(elem.gene_ontology_symbol); 
+              }
+              }
+
+              
+
+           console.log(geneSymbolToGO)
+        
+            }
+            
+          })
+          
+        
+        
+        
+        console.log(geneSymbolToGO)
+        
+       
+
+          
+
+
+
+
+
+
+          
         let html_table = helper.buildTable(
           parsed_search_result['diseases'][disease],
           table_id,
-          Object.keys(parsed_search_result['diseases'][disease][0])
+          Object.keys(parsed_search_result['diseases'][disease][0]),
+          geneSymbolToGO
         )
 
         // this line also removes the loading spinner
@@ -1242,7 +1302,8 @@ export class SearchComponent implements OnInit {
       });
     });
 
-
-
+    
   }
+  
+  
 }

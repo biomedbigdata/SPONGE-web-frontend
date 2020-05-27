@@ -1,6 +1,7 @@
 import { Controller } from "../app/control";
 import { Session } from "../app/session";
 import sigma from 'sigma';
+import { element } from 'protractor';
 
 // wtf you have to declare sigma after importing it
 declare const sigma: any;
@@ -55,7 +56,7 @@ export class Helper {
 
     controller = new Controller()
 
-    public buildTable(data, table_name, column_names) {
+    public buildTable(data, table_name, column_names, gene_name_lis=null) {
         
         var table = document.createElement("table");
         table.id=table_name;
@@ -163,9 +164,9 @@ export class Helper {
              
               //für jde go nummer nen button machen mit link
         
-              $this.controller.get_GO({
-                gene_symbol: [el['Gene Symbol']],
-                callback: (response) => {
+           //   this.controller.get_GO({
+           //     gene_symbol: [el['Gene Symbol']],
+           //     callback: (response) => {
                 
                   /**
                    * Get GO numbers
@@ -173,7 +174,17 @@ export class Helper {
                  // for (let entry of response) {
                  //   go_numbers.push(entry['gene_ontology_symbol']) 
                  // }
+               //  console.log(gene_name_lis[0])
                 
+    
+                
+                 // for (let [key, response] of Object.entries(gene_name_lis)) {
+            for (let response of Object.entries(gene_name_lis)) {
+                    
+           //  let response = element
+               
+                  
+              
                  var button_count=1  //if more than 12 go buttons exist, the show more button is used data-toggle="collapse"
                  var go_button=document.createElement("a");           
                  go_button.setAttribute("id","show_more")
@@ -223,8 +234,9 @@ export class Helper {
                     
                   }
                 }
+          //      }
             
-            })           
+          //  })           
           }else{
             td.appendChild(document.createTextNode("-"));
           }

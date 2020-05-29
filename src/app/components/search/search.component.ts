@@ -4,6 +4,9 @@ import { Helper } from "../../helper"
 import {Router, ActivatedRoute, Params} from '@angular/router'
 import { SharedService } from "../../shared.service"
 import 'datatables.net'
+import { callbackify } from 'util'
+import { resolve } from 'dns'
+import { Message } from '@angular/compiler/src/i18n/i18n_ast'
 
 declare var Plotly: any;
 declare var $;
@@ -1005,58 +1008,9 @@ export class SearchComponent implements OnInit {
                
       let geneSymbolToGO = []
 
-     
-          
-        controller.get_GO(
-          {
-            gene_symbol: gene_names_for_GO,
-            callback: function(response) {
-              let tmp=[]
-              
-
-              var geneSymbol = "first"
-              for (let elem of response) {
-               
-               if(geneSymbol != elem.gene.gene_symbol){
-                if(tmp.length>0){
-                  geneSymbolToGO[geneSymbol] =tmp
-                  tmp = []
-                }
-                  geneSymbol = elem.gene.gene_symbol
-                 
-                  
-                  tmp.push(elem.gene_ontology_symbol)
-                 // geneSymbolToGO[geneSymbol] = elem.gene_ontology_symbol; 
-                  //hinzuügen der arraylist zu map
-               }else{
-                tmp.push(elem.gene_ontology_symbol)
-               // geneSymbolToGO[geneSymbol].push(elem.gene_ontology_symbol); 
-              }
-              }
-
-              
-
-           console.log(geneSymbolToGO)
+  
+      $this.getGOArray(gene_names_for_GO,controller,geneSymbolToGO).then(() =>{
         
-            }
-            
-          })
-          
-        
-        
-        
-        console.log(geneSymbolToGO)
-        
-       
-
-          
-
-
-
-
-
-
-          
         let html_table = helper.buildTable(
           parsed_search_result['diseases'][disease],
           table_id,
@@ -1066,7 +1020,7 @@ export class SearchComponent implements OnInit {
 
         // this line also removes the loading spinner
         $('#collapse_' + disease_trimmed).find('.card-body-table').html(html_table)
-
+   
         // if more data to load, display loading spinner with info message
         if (!table_complete) {
           $('#collapse_' + disease_trimmed).find('.card-body-table').append(`
@@ -1079,6 +1033,9 @@ export class SearchComponent implements OnInit {
         `
         )}
   
+     
+        
+      
         push_interaction_filters(table_id)
         
         const disease_first_letter_uppercase = disease.charAt(0).toUpperCase() + disease.substring(1);
@@ -1149,7 +1106,7 @@ export class SearchComponent implements OnInit {
         table = $("#" + table_id).DataTable(datatable_settings)
 
         helper.colSearch(table_id, table, first_col_hidden)
-  
+      }).catch(()=>{console.log("GO array coulndt be loaded")})
         $(`
         #mscor_min_${table_id},
         #mscor_max_${table_id},
@@ -1305,5 +1262,44 @@ export class SearchComponent implements OnInit {
     
   }
   
+  public getGOArray(gene_names_for_GO, controller, outputArray){
+    return new Promise(resolve =>{
+    controller.get_GO(
+    {
+      gene_symbol: gene_names_for_GO,
+      callback: function(response) {
+        let tmp=[]
+        
+
+        var geneSymbol = "first"
+        for (let elem of response) {
+         
+         if(geneSymbol != elem.gene.gene_symbol){
+          if(tmp.length>0){
+            outputArray[geneSymbol] =tmp
+            tmp = []
+          }
+            geneSymbol = elem.gene.gene_symbol
+           
+            
+            tmp.push(elem.gene_ontology_symbol)
+           // geneSymbolToGO[geneSymbol] = elem.gene_ontology_symbol; 
+            //hinzuügen der arraylist zu map
+         }else{
+          tmp.push(elem.gene_ontology_symbol)
+         // geneSymbolToGO[geneSymbol].push(elem.gene_ontology_symbol); 
+        }
+        }
+
+        
+
+     console.log(outputArray)
+     return resolve(response)
   
+      }
+      
+    })
+  });
+
+  }
 }

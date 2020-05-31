@@ -4,9 +4,6 @@ import { Helper } from "../../helper"
 import {Router, ActivatedRoute, Params} from '@angular/router'
 import { SharedService } from "../../shared.service"
 import 'datatables.net'
-import { callbackify } from 'util'
-import { resolve } from 'dns'
-import { Message } from '@angular/compiler/src/i18n/i18n_ast'
 
 declare var Plotly: any;
 declare var $;
@@ -224,6 +221,8 @@ export class SearchComponent implements OnInit {
             }  
           }
         })
+      
+       // try to get all go terms in one api call and map the info later to the table
       }
       }
     }
@@ -465,7 +464,7 @@ export class SearchComponent implements OnInit {
         let html_table = helper.buildTable(
           parsed_search_result['diseases'][disease],
           table_id,
-          Object.keys(parsed_search_result['diseases'][disease][0]),""
+          Object.keys(parsed_search_result['diseases'][disease][0])
         )
         $('#collapse_' + disease_trimmed).find('.card-body-table').html(html_table)
 
@@ -669,7 +668,8 @@ export class SearchComponent implements OnInit {
           "<button disabled='true' class='btn btn-secondary button-margin' type='button' data-toggle='collapse' data-target='#control_" + table_id + "' aria-expanded='false'>" +
           "Filter" +
           "</button>" +
-          "<button class='export_nodes btn btn-primary button-margin' style='float: left;' value="+table_id+" disabled='true'>Show as Network</button>"+
+          "<button class='export_nodes_enrichment btn btn-primary button-margin' style='float: left;' value="+table_id+" disabled='true'>Gene Set Enrichment Analysis<br> (external)</button>"+
+          "<button class='export_nodes btn btn-primary button-margin' style='float: left;' value="+table_id+" disabled='true'>Show competing endogenous<br> RNA network</button>"+
           `
           <select class="selectpicker ${(search_key.length<2) ? 'hidden' : ''}" id="interactions_relatve_to_search_keys_${table_id}" disabled>
             <option value="all">All</option>
@@ -677,7 +677,6 @@ export class SearchComponent implements OnInit {
             <option value="between">Show only interactions <strong>between</strong> search genes</option>
           </select>
           `+
-          "<button class='export_nodes_enrichment btn btn-primary button-margin' style='float: left;' value="+table_id+" disabled='true'>Gene Enrichment</button>"+
           "</div>"+
           "<div class='collapse' id='control_" + table_id + "' style='margin-bottom:20px;'>" +
           "<div class='card card-body' style='border-radius:10px; background-color: #004085; background:linear-gradient(45deg, #043056, #004085, #043056); color:white'>" +
@@ -916,13 +915,21 @@ export class SearchComponent implements OnInit {
     function parse_cerna_response_to_table(response, table_id, table_complete=false) {
 
       let table
-      let gene_names_for_GO = []
+
       let disease = response[0]["run"]["dataset"]["disease_name"]
       let disease_trimmed = disease.split(' ').join('').replace('&', 'and')
       parsed_search_result = {}
       parsed_search_result['diseases'] = {}
       parsed_search_result['key'] = undefined
+      let r= []
+      
+      response.forEach(element =>{
+        r.push(element['gene2']['gene_symbol'])
+      })
+      let test=[]
+      getGONumbers(r,test)
 
+    console.log(test)
       response.forEach(interaction => {
         
         // parse the information
@@ -952,7 +959,10 @@ export class SearchComponent implements OnInit {
         if (!(disease in parsed_search_result['diseases'])) {
           parsed_search_result['diseases'][disease] = []
         }
-      
+
+    
+    
+
 
         // KEEP ORDER OF THESE INTERACTIONS as it is how it is displayed in webpage
         interaction_info['Search Gene'] = interaction[gene_as_key]['ensg_number'] // store information which gene was key to get intersection of all keys
@@ -967,16 +977,15 @@ export class SearchComponent implements OnInit {
         interaction_info['Pathway'] = 'pathway'
         interaction_info['GeneCard'] = 'genecard'
         interaction_info['Gene Ontology'] = 'go'
+       // interaction_info['Gene Ontology'] = specific_go_list
+      
         
 //        interaction_info['miRNA'] = ''
 
         parsed_search_result['diseases'][disease].push(interaction_info)
-        if(interaction[gene_to_extract]['gene_symbol'] !==null){
-        //create list of gene names for Gene Ontology api request
-        gene_names_for_GO.push(interaction[gene_to_extract]['gene_symbol'])
-        }
-      }); // end for each
 
+      }); // end for each
+  
       /*********** check if table for this disease already exists, if so append, else create new **********/
       if ($('#'+table_id).length) {
         /************* TABLE EXISTS ALREADY, JUST APPEND ROWS ****************/
@@ -1004,23 +1013,16 @@ export class SearchComponent implements OnInit {
         // key_information_sentence += " on chromosome " + key_information['chromosome']
   
         // $('#key_information').html(key_information_sentence)
-       
-               
-      let geneSymbolToGO = []
-
   
-      $this.getGOArray(gene_names_for_GO,controller,geneSymbolToGO).then(() =>{
-        
         let html_table = helper.buildTable(
           parsed_search_result['diseases'][disease],
           table_id,
-          Object.keys(parsed_search_result['diseases'][disease][0]),
-          geneSymbolToGO
+          Object.keys(parsed_search_result['diseases'][disease][0])
         )
 
         // this line also removes the loading spinner
         $('#collapse_' + disease_trimmed).find('.card-body-table').html(html_table)
-   
+
         // if more data to load, display loading spinner with info message
         if (!table_complete) {
           $('#collapse_' + disease_trimmed).find('.card-body-table').append(`
@@ -1033,9 +1035,6 @@ export class SearchComponent implements OnInit {
         `
         )}
   
-     
-        
-      
         push_interaction_filters(table_id)
         
         const disease_first_letter_uppercase = disease.charAt(0).toUpperCase() + disease.substring(1);
@@ -1106,7 +1105,7 @@ export class SearchComponent implements OnInit {
         table = $("#" + table_id).DataTable(datatable_settings)
 
         helper.colSearch(table_id, table, first_col_hidden)
-      }).catch(()=>{console.log("GO array coulndt be loaded")})
+  
         $(`
         #mscor_min_${table_id},
         #mscor_max_${table_id},
@@ -1192,7 +1191,10 @@ export class SearchComponent implements OnInit {
         }
         table.draw()
 */
+
+
       }
+      
     }
 
     $(function() { 
@@ -1259,47 +1261,23 @@ export class SearchComponent implements OnInit {
       });
     });
 
-    
-  }
-  
-  public getGOArray(gene_names_for_GO, controller, outputArray){
-    return new Promise(resolve =>{
-    controller.get_GO(
-    {
-      gene_symbol: gene_names_for_GO,
-      callback: function(response) {
-        let tmp=[]
-        
-
-        var geneSymbol = "first"
-        for (let elem of response) {
-         
-         if(geneSymbol != elem.gene.gene_symbol){
-          if(tmp.length>0){
-            outputArray[geneSymbol] =tmp
-            tmp = []
-          }
-            geneSymbol = elem.gene.gene_symbol
-           
-            
-            tmp.push(elem.gene_ontology_symbol)
-           // geneSymbolToGO[geneSymbol] = elem.gene_ontology_symbol; 
-            //hinzuügen der arraylist zu map
-         }else{
-          tmp.push(elem.gene_ontology_symbol)
-         // geneSymbolToGO[geneSymbol].push(elem.gene_ontology_symbol); 
-        }
-        }
-
-        
-
-     console.log(outputArray)
-     return resolve(response)
-  
-      }
+    async function getGONumbers(gene_symbol,specific_go_list:string[], callback:any){
+      let test=[]
+   let m= controller.get_GO({'gene_symbol':gene_symbol,
+    'callback':all_go_data => {
       
-    })
-  });
+  
+     all_go_data.forEach(element => {
+       specific_go_list.push(element)
+       test.push(element)
+     });
+     return test;
+    }
+   
+  }); 
+  console.log(m)
+  return await test;
+   }
 
   }
 }

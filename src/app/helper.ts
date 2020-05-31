@@ -56,7 +56,7 @@ export class Helper {
 
     controller = new Controller()
 
-    public buildTable(data, table_name, column_names, gene_name_list) {
+    public buildTable(data, table_name, column_names) {
         
         var table = document.createElement("table");
         table.id=table_name;
@@ -158,10 +158,10 @@ export class Helper {
             td.appendChild(document.createTextNode("-"));
           }
             }
-            else if(el[o] == 'go'){
-              if(el['Gene Symbol'] !="-" && gene_name_list[el['Gene Symbol']] != undefined){
+            else if(el == "Gene Ontology"){
+              if(o != null){
               td.setAttribute("class","go")
-             
+             console.log(o)
               //für jde go nummer nen button machen mit link
         
            //   this.controller.get_GO({
@@ -176,13 +176,13 @@ export class Helper {
                  // }
              //    console.log(gene_name_list['LRRC71'])
             //    console.log(el['Gene Symbol'])
-               let response=gene_name_list[el['Gene Symbol']] //list of GO numbers for a gene
+             //  let response=gene_name_list[el['Gene Symbol']] //list of GO numbers for a gene
               // console.log(response)
                 
                  // for (let [key, response] of Object.entries(gene_name_lis)) {
            
                     
-           //  let response = element
+            let response = o //list of go umbers
               
                
                  var button_count=1  //if more than 12 go buttons exist, the show more button is used data-toggle="collapse"

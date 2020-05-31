@@ -589,7 +589,7 @@ export class Controller {
                 })
         }
 
-        public get_GO(
+     public async get_GO(
                 config: {
                     gene_symbol: string[], 
                     callback: (response) => any,
@@ -607,7 +607,7 @@ export class Controller {
                     }
                     console.log(request)
      
-                    $.getJSON(request,
+                 await $.getJSON(request,
                         response => {
                             if(response.status != "202"){
                           //  return config.callback(response)
@@ -615,13 +615,13 @@ export class Controller {
                         }
                     ).then(res =>{
                         if(res.status != "202"){
-                            return config.callback(res)
+                            return  config.callback(res)
                             }
                     }).fail(
                         res => {
                             return config.callback(res)
                         })    
-                    
+             
         }
 
         public get_GO_Promis(

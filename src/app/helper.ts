@@ -150,6 +150,10 @@ export class Helper {
 
       public buildTable_GO_HM(table_id) {
        let count =0
+       let goCount =0
+       let pathwayCount =0
+       let hallmarkCount =0
+       let cardCount=0
         let div= document.createElement('div')
         div.setAttribute("class","full-width text-center")
         let spinner = document.createElement('div')
@@ -163,16 +167,30 @@ export class Helper {
      var table = document.getElementById(table_id) as HTMLTableElement;
       
     
-     for (var i = 0, row; row = table.rows[i]; i++) {
+    // for (var i = 0, row; row = table.rows[i]; i++) {
       //iterate through rows
-    
-      for (var j = 0, col; col = row.cells[j]; j++) {
-        if(col.textContent.match("Gene Symbol")){
-          count =j;
-          break
+   // let  row1 = table.rows[0]
+   /**   for (var j = 1, col; col = row1.cells[j]; j++) {
+        switch(col.textContent){
+          case "Gene Symbol":{ count =j; break;}
+          case "Gene Card":{ cardCount =j; break;}
+          case "Hallmarks":{ hallmarkCount =j; break;}
+          case "Pathway":{ pathwayCount =j; break;}
+          case "Gene Ontology":{ goCount =j; break;}
+        }
+      } */
+      let  row1 = table.rows[0]
+      for(var i=0; i< row1.cells.length;i++){
+        switch(row1.cells[i].textContent){
+          case "Gene Symbol":{ count =i; break;}
+          case "Gene Card":{ cardCount =i; break;}
+          case "Hallmarks":{ hallmarkCount =i; break;}
+          case "Pathway":{ pathwayCount =i; break;}
+          case "Gene Ontology":{ goCount =i;break;}
         }
       }
-    }
+
+   // }
        //fill array for api request
       for (var i = 0, row; row = table.rows[i]; i++) {
         //iterate through rows
@@ -181,7 +199,7 @@ export class Helper {
           if(!gene_symbols.includes( row.cells[count].textContent) && row.cells[count].textContent != "-" && row.cells[count].textContent !== "" && row.cells[count].textContent !== "Gene Symbol"){
           gene_symbols.push( row.cells[count].textContent)
         }
-        if(row.cells[9].textContent=='genecard'){
+        if(row.cells[cardCount].textContent=='genecard'){
           var path=document.createElement("a");
           path.setAttribute("id","genecard");
           path.setAttribute("class","btn btn-outline-primary");
@@ -204,7 +222,7 @@ export class Helper {
        //   $("#genecard").html("<button type='button' class='btn btn-outline-primary' onclick='location.href='#''></button>");
         
   
-       row.cells[9].parentNode.replaceChild(td, row.cells[9]);
+       row.cells[cardCount].parentNode.replaceChild(td, row.cells[cardCount]);
 
       }
      }
@@ -215,7 +233,7 @@ export class Helper {
           //get corresponding pathway col
           for (var i = 0, row; row = table.rows[i]; i++) {
             //iterate through rows
-              let col = row.cells[count+6]
+              let col = row.cells[pathwayCount]
             
                 
                 var td = document.createElement("td");
@@ -276,7 +294,7 @@ export class Helper {
             for (var i = 0, row; row = table.rows[i]; i++) {
               //iterate through rows
                  var tr = document.createElement("tr");
-                 let col = row.cells[count+6]
+                 let col = row.cells[pathwayCount]
                   
                   var td = document.createElement("td");
                       
@@ -306,7 +324,7 @@ export class Helper {
         //iterate through rows
            var tr = document.createElement("tr");
           
-            let col = row.cells[count+5]
+            let col = row.cells[hallmarkCount]
             var td = document.createElement("td");
                 
             if(col.textContent == 'hallmark')
@@ -316,7 +334,7 @@ export class Helper {
                {
 
                  var hallmark=document.createElement("p");           
-                 hallmark.setAttribute("id","hallmark"+row.cells[1].textContent)
+                 hallmark.setAttribute("id","hallmark"+row.cells[count-1].textContent)
         
                  let hallmark_string=''
                  if(response.length>0)
@@ -356,7 +374,7 @@ export class Helper {
                   for (var i = 0, row; row = table.rows[i]; i++) {
                     //iterate through rows
                        var tr = document.createElement("tr");
-                       let col = row.cells[count+5]
+                       let col = row.cells[hallmarkCount]
                         
                         var td = document.createElement("td");
                             
@@ -381,13 +399,16 @@ export class Helper {
         gene_symbol: gene_symbols,
         callback: (response) => {
          
-      console.log(response)
+  
          //get corresponding hallmark col
          for (var i = 0, row; row = table.rows[i]; i++) {
           //iterate through rows
              var tr = document.createElement("tr");
-             let col = row.cells[count+8]
-              
+            if(goCount==10){
+              goCount-=1
+             }
+             let col = row.cells[goCount]
+              console.log(col.textContent +" "+goCount)
               var td = document.createElement("td");
               if(col.textContent == 'go')
               {
@@ -444,7 +465,7 @@ export class Helper {
                     }
                     if(td.textContent== null || td.textContent== "" || td.textContent == "go"){
                       var go=document.createElement("a");           
-                      go.setAttribute("id","go"+row.cells[0].textContent )             
+                      go.setAttribute("id","go"+row.cells[count-1].textContent )             
                       go.textContent= "No GO terms with given parameters found!"
                       td.appendChild(go)
                     }
@@ -460,7 +481,7 @@ export class Helper {
                     
                   }
             }
-          
+             
       }
     }, error:(err) =>{
           //if the respose is empty because all gene names are - 
@@ -468,7 +489,7 @@ export class Helper {
                   for (var i = 0, row; row = table.rows[i]; i++) {
                     //iterate through rows
                        var tr = document.createElement("tr");
-                       let col = row.cells[count+8]
+                       let col = row.cells[goCount]
                         
                         var td = document.createElement("td");
                             
@@ -484,7 +505,8 @@ export class Helper {
                    // hallmark.textContent = err
                     }}
     
-    })              
+    })        
+     
         return table;
       }
 
@@ -512,7 +534,6 @@ export class Helper {
                       .search( this['value'])
                       .draw();
               }
-            $this.buildTable_GO_HM(datatable_id)
           } 
          
           );

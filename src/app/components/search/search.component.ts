@@ -118,6 +118,7 @@ export class SearchComponent implements OnInit {
       let tmp_id =$(this).closest('.paginate_button .page-item .active').prevObject[0].children[0].id
       let table_id = tmp_id.split('_')[0]
       helper.buildTable_GO_HM(table_id)
+  
     })
    
     function draw_cancer_type_accordion() {
@@ -1031,7 +1032,8 @@ export class SearchComponent implements OnInit {
         )}
   
         push_interaction_filters(table_id)
-      
+     
+
         const disease_first_letter_uppercase = disease.charAt(0).toUpperCase() + disease.substring(1);
         const filename = `SPONGE Interactions ${disease_first_letter_uppercase} ${search_key}`
         // define table settings based on search key length
@@ -1102,9 +1104,9 @@ export class SearchComponent implements OnInit {
         }
 
         table = $("#" + table_id).DataTable(datatable_settings)
-
+       
         helper.colSearch(table_id, table, first_col_hidden)
-  
+        
         $(`
         #mscor_min_${table_id},
         #mscor_max_${table_id},
@@ -1115,7 +1117,6 @@ export class SearchComponent implements OnInit {
         `).keyup(() => {
           table.draw()
         })
-        helper.buildTable_GO_HM(table_id)
         // make rows selectable
         $('#' + table_id + ' tbody').on('click', 'tr', function () {
           $(this).toggleClass('selected');
@@ -1155,7 +1156,7 @@ export class SearchComponent implements OnInit {
 
         // enable buttons
         $('#'+table_id).closest('.card-body').find('button').prop('disabled', false);
-
+        helper.buildTable_GO_HM(table_id)
          // enable intersection_search if more than 1 gene key was found
         if ($('#'+table_id).DataTable().column(0).data().unique().length > 1) {
           $('#interactions_relatve_to_search_keys_'+table_id).removeAttr('disabled')
@@ -1177,7 +1178,6 @@ export class SearchComponent implements OnInit {
           $('#interactions_relatve_to_search_keys_'+table_id).closest('div').remove()
           
         }
-        helper.buildTable_GO_HM(table_id)
 
 /* 
         // start adding miRNAs

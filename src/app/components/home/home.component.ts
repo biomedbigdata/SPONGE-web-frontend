@@ -61,8 +61,167 @@ export class HomeComponent implements OnInit {
        interactions = subArray(interactions_tmp,0)
        dnl = subArray(sign_tmp,1)
        let dnl_insig = subArray(interactions_tmp,1)
-              
         
+       let abr_dnl=[]
+       let abr_dnl_sig=[]
+      console.log(dnl)
+
+      dnl_insig.forEach(full_name => {
+      
+        switch(full_name) {
+          case "Pancancer":
+            abr_dnl.push("(PANCAN) "+full_name)
+            break;
+          case "Prostate adenocarcinoma":
+            abr_dnl.push("(PAAD) "+full_name)
+            break;
+          case "Thymoma":
+            abr_dnl.push("(THYM) "+full_name)
+            break;
+          case "Testicular germ cell tumor":
+            abr_dnl.push("(TGCT) "+full_name)
+            break;
+          case "Breast invasive carcinoma":
+            abr_dnl.push("(BRCA) "+full_name)
+            break;
+          case "Colon adenocarcinoma":
+            abr_dnl.push("(COAD) "+full_name)
+            break;
+          case "Stomach adenocarcinoma": 
+            abr_dnl.push("(STAD) "+full_name)
+            break;
+          case "Bladder urothelial carcinoma":
+            abr_dnl.push("(BUCA) "+full_name)
+            break;
+          case "Sarcoma":
+            abr_dnl.push("(SARC) "+full_name)
+            break;
+          case "Thyroid carcinoma":
+            abr_dnl.push("(THCA) "+full_name)
+            break;
+          case "Kidney papillary cell carcinoma":
+            abr_dnl.push("(KPCC) "+full_name)
+            break;
+          case "Esophageal carcinoma":
+            abr_dnl.push("(ESCA) "+full_name)
+            break;
+          case "Head & neck squamous cell carcinoma":
+            abr_dnl.push("(HNSC) "+full_name)
+            break;
+          case "Liver hepatocellular carcinoma":
+            abr_dnl.push("(LIHC) "+full_name)
+            break;
+          case "Kidney clear cell carcinoma":
+            abr_dnl.push("(KCCC) "+full_name)
+            break;
+          case "Brain lower grade glioma":
+            abr_dnl.push("(BLCA) "+full_name)
+            break;
+          case "Pancreatic adenocarcinoma":
+            abr_dnl.push("(PAAD) "+full_name)
+            break;
+          case "Lung squamous cell carcinoma":
+            abr_dnl.push("(LSCC) "+full_name)
+            break;
+          case "Cervical & endocervical cancer":
+            abr_dnl.push("(CECA) "+full_name)
+            break;
+          case "Pheochromocytoma & paraganglioma":
+            abr_dnl.push("(PCPG) "+full_name)
+            break;
+          case "Lung adenocarcinoma":
+            abr_dnl.push("(LUAD) "+full_name)
+            break;
+          case "Ovarian serous cystadenocarcinoma":
+            abr_dnl.push("(OV) "+full_name)
+            break;
+          case "Uterine corpus endometrioid carcinoma":
+            abr_dnl.push("(UCEC) "+full_name)
+            break;
+          
+
+          default:
+            abr_dnl.push(full_name)
+        }
+      });
+/** 
+      switch(full_name) {
+        case "Pancancer":
+          abr_dnl.push("PANCAN | "+full_name)
+          break;
+        case "Prostate adenocarcinoma":
+          abr_dnl.push("PAAD | "+full_name)
+          break;
+        case "Thymoma":
+          abr_dnl.push("THYM | "+full_name)
+          break;
+        case "Testicular germ cell tumor":
+          abr_dnl.push("TGCT | "+full_name)
+          break;
+        case "Breast invasive carcinoma":
+          abr_dnl.push("BRCA | "+full_name)
+          break;
+        case "Colon adenocarcinoma":
+          abr_dnl.push("COAD | "+full_name)
+          break;
+        case "Stomach adenocarcinoma": 
+          abr_dnl.push("STAD | "+full_name)
+          break;
+        case "Bladder urothelial carcinoma":
+          abr_dnl.push("BUCA | "+full_name)
+          break;
+        case "Sarcoma":
+          abr_dnl.push("SARC | "+full_name)
+          break;
+        case "Thyroid carcinoma":
+          abr_dnl.push("THCA | "+full_name)
+          break;
+        case "Kidney papillary cell carcinoma":
+          abr_dnl.push("KPCC | "+full_name)
+          break;
+        case "Esophageal carcinoma":
+          abr_dnl.push("ESCA | "+full_name)
+          break;
+        case "Head & neck squamous cell carcinoma":
+          abr_dnl.push("HNSC | "+full_name)
+          break;
+        case "Liver hepatocellular carcinoma":
+          abr_dnl.push("LIHC | "+full_name)
+          break;
+        case "Kidney clear cell carcinoma":
+          abr_dnl.push("KCCC | "+full_name)
+          break;
+        case "Brain lower grade glioma":
+          abr_dnl.push("BLCA | "+full_name)
+          break;
+        case "Pancreatic adenocarcinoma":
+          abr_dnl.push("PAAD | "+full_name)
+          break;
+        case "Lung squamous cell carcinoma":
+          abr_dnl.push("LSCC | "+full_name)
+          break;
+        case "Cervical & endocervical cancer":
+          abr_dnl.push("CECA | "+full_name)
+          break;
+        case "Pheochromocytoma & paraganglioma":
+          abr_dnl.push("PCPG | "+full_name)
+          break;
+        case "Lung adenocarcinoma":
+          abr_dnl.push("LUAD | "+full_name)
+          break;
+        case "Ovarian serous cystadenocarcinoma":
+          abr_dnl.push("OV | "+full_name)
+          break;
+        case "Uterine corpus endometrioid carcinoma":
+          abr_dnl.push("UCEC | "+full_name)
+          break;
+        
+
+        default:
+          abr_dnl.push(full_name)
+      }
+    }); 
+    **/
           var miRNAs2=  {
             x: dnl,
             y: shared_mirnas,
@@ -75,7 +234,7 @@ export class HomeComponent implements OnInit {
           };
 
           var correlations_pred=  {
-            x: dnl_insig,
+            x: dnl,//dnl_insig,
             y: interactions,
             type: 'bar',
             visible: 'legendonly',
@@ -87,7 +246,7 @@ export class HomeComponent implements OnInit {
           };
 
           var correlations_sig=  {
-            x: dnl,
+            x: abr_dnl,
             y: interactions_sig,
             type: 'bar',
             name: 'Count of significant interactions',

@@ -1,9 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { Controller } from 'src/app/control';
 import { Helper } from 'src/app/helper';
-import { analyzeAndValidateNgModules } from '@angular/compiler';
-import {data} from 'browserslist';
-import {subscribeOn} from 'rxjs/operators';
 declare var Plotly: any;
 declare var $: any;
 

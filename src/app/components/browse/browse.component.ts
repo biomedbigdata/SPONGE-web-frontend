@@ -1325,7 +1325,7 @@ export class BrowseComponent implements OnInit {
                   column: 6,
                 })
                 .data(mirnasString);
-              return resolve();
+              return Promise.resolve();
             },
             error: () => {
               edgeTable
@@ -1334,7 +1334,7 @@ export class BrowseComponent implements OnInit {
                   column: 6,
                 })
                 .data('-');
-              return resolve();
+              return Promise.resolve();
             },
           });
         });

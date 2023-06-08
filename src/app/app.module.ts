@@ -17,6 +17,7 @@ import { DownloadComponent } from './components/download/download.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatLineModule} from '@angular/material/core';
+import {GBrowserModule} from 'g-browser';
 
 @NgModule({
   declarations: [
@@ -31,14 +32,15 @@ import {MatLineModule} from '@angular/material/core';
     TutorialComponent,
     DownloadComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    AutosizeModule,
-    BrowserAnimationsModule,
-    MatTabsModule,
-    MatLineModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        AutosizeModule,
+        BrowserAnimationsModule,
+        MatTabsModule,
+        MatLineModule,
+        GBrowserModule
+    ],
 
   providers: [
     {

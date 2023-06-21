@@ -30,7 +30,7 @@
                         <a class="nav-item nav-link" id="nav-nodes-tab" data-toggle="tab" href="#nav-nodes" role="tab" aria-controls="nav-nodes" aria-selected="false" > <li>Genes in the Network</li> </a>
                         <a class="nav-item nav-link" id="nav-edges-tab" data-toggle="tab" href="#nav-edges" role="tab" aria-controls="nav-edges" aria-selected="false"> <li>Interactions in the Network</li></a>
                         <!--<a class="nav-item nav-link" id="Genome-Browser" data-toggle="tab" href="#nav-edges" role="tab" aria-controls="nav-edges" aria-selected="false"> <li><  g-browser></g-browser></li></a>-->
-                        <a class="nav-item nav-link" id="Genome-Browser" data-toggle="tab" href="#nav-overview" role="tab" aria-controls="nav-edges" aria-selected="false"> <iframe src="https://vps-zap841713-2.zap-srv.com/genome-browser?genome=hg38"></iframe></a>
+                        <a class="nav-item nav-link" id="Genome-Browser" data-toggle="tab" href="#nav-overview" role="tab" aria-controls="nav-edges" aria-selected="false"> <li>Genome Browser</li></a>
                     </ul>
                 </ul>
            </div>
@@ -216,8 +216,9 @@
 
 
             <div class="col-12">
-                <div class="tab-content" id="v-pills-tabContent">
 
+                <div class="tab-content" id="v-pills-tabContent">
+                  <g-browser></g-browser>
                     <!-- Interactions -->
                     <div class="tab-pane fade show active" id="v-pills-interactions" role="tabpanel" aria-labelledby="v-pills-interactions-tab">
 

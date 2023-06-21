@@ -22,8 +22,6 @@
                                 <a class="nav-item nav-link active" id="v-pills-interactions-tab" data-toggle="pill" href="#v-pills-interactions" role="tab" aria-controls="v-pills-interactions" aria-selected="true" target="_self">
                                         <i class="fa fa-rocket fa-lg"> </i>Interactions <span class="arrow"></span>
                                 </a>
-
-
                         </li>
 
 
@@ -31,22 +29,22 @@
                         <a class="nav-item nav-link active" id="nav-overview-tab" data-toggle="tab" href="#nav-overview" role="tab" aria-controls="nav-overview" aria-selected="true"><li>Network</li> </a>
                         <a class="nav-item nav-link" id="nav-nodes-tab" data-toggle="tab" href="#nav-nodes" role="tab" aria-controls="nav-nodes" aria-selected="false" > <li>Genes in the Network</li> </a>
                         <a class="nav-item nav-link" id="nav-edges-tab" data-toggle="tab" href="#nav-edges" role="tab" aria-controls="nav-edges" aria-selected="false"> <li>Interactions in the Network</li></a>
+                        <!--<a class="nav-item nav-link" id="Genome-Browser" data-toggle="tab" href="#nav-edges" role="tab" aria-controls="nav-edges" aria-selected="false"> <li><  g-browser></g-browser></li></a>-->
+                        <a class="nav-item nav-link" id="Genome-Browser" data-toggle="tab" href="#nav-overview" role="tab" aria-controls="nav-edges" aria-selected="false"> <iframe src="https://vps-zap841713-2.zap-srv.com/genome-browser?genome=hg38"></iframe></a>
                     </ul>
-
                 </ul>
-
-             </div>
-             <li>
-                    <a class="nav-item nav-link" id="v-pills-run_information-tab" role="tab" aria-controls="v-pills-run_information" aria-selected="true" target="_self">
-                            <i class="fa fa-info-circle fa-lg"></i> Run Information & Settings
-                    </a>
-             </li>
-             <li style="position: sticky;">
-                <!--Run information tab in sidenav-->
+           </div>
+           <li>
+                  <a class="nav-item nav-link" id="v-pills-run_information-tab" role="tab" aria-controls="v-pills-run_information" aria-selected="true" target="_self">
+                          <i class="fa fa-info-circle fa-lg"></i> Run Information & Settings
+                  </a>
+           </li>
+           <li style="position: sticky;">
+              <!--Run information tab in sidenav-->
                     <div class="container-fluid" id="run-info">
-                        <div class="tab-pane fade active show" id="v-pills-run_information" role="tabpanel" aria-labelledby="v-pills-run_information-tab">
+                        <div class="tab-pane fade active show" class="v-pills-run_information" role="tabpanel" aria-labelledby="v-pills-run_information-tab">
                             <div id="browse_sorting_value_container1">
-                            <table id="browse_user_input">
+                            <table class="browse_user_input">
 
                                 <tr class="text-center" style="align-items: center; display: flex; position: relative; left: 70%;">
                                     <th><h5 class="underline">Genes </h5></th>
@@ -67,15 +65,15 @@
                             </table>
                         </div>
 
-                            <table id="browse_user_input">
+                            <table class="browse_user_input">
 
                                 <tr class="">
                                     <td><p>Limit for displayed genes (the more the slower)</p></td>
-                                    <td><input type="text" class="form-control" id="input_limit"></td>
+                                    <td><input type="text" class="form-control" class="input_limit"></td>
                                 </tr>
                                 <tr class="">
                                     <td><p>Cutoff for network-degree (lower bound): </p></td>
-                                    <td><input type="text" class="form-control" id="input_cutoff_degree" value=1></td>
+                                    <td><input type="text" class="form-control" class="input_cutoff_degree" value=1></td>
                                 </tr>
 
                                 <tr>
@@ -104,11 +102,11 @@
                             </td>
                             </div>
 
-                            <table id="browse_user_input">
+                            <table class="browse_user_input">
 
                                 <tr class="">
                                     <td><p>Limit for displayed interactions (the more the slower): </p></td>
-                                    <td><input type="text" class="form-control" id="input_limit_interactions" value=100></td>
+                                    <td><input type="text" class="form-control" class="input_limit_interactions" value=100></td>
                                 </tr>
 
                                 <tr class="">
@@ -125,20 +123,20 @@
 
                             <div class="buttons">
 
-                                <button id="load_disease" type="button" class="btn btn-primary button-margin">Go</button>
+                                <button class="load_disease" type="button" class="btn btn-primary button-margin">Go</button>
 
                                 <button class="btn btn-secondary" id="vis-button" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                                         Data of visualized run
                                 </button>
-                                <a id="selector_diseases_link"  href="" target="_blank">
+                                <a class="selector_diseases_link"  href="" target="_blank">
                                         <button type="button" id="end-button" class="btn btn-secondary button-margin">Download original data <i class="fa fa-link"></i>
                                         </button>
                                 </a>
                                 <!--Displays the data of the currently shown run-->
                                 <!--TODO maybe add info what each entrie means-->
-                                <div class="collapse" id="collapseExample">
+                                <div class="collapse" class="collapseExample">
                                     <div class="card card-body">
-                                        <pre id="selector_disease_result"></pre>
+                                        <pre class="selector_disease_result"></pre>
                                     </div>
                                 </div>
 
@@ -375,7 +373,7 @@
                   </div>
                     <!-- Run Information -->
                 <div class="container-fluid">
-                    <div class="tab-pane fade" id="v-pills-run_information" role="tabpanel" aria-labelledby="v-pills-run_information-tab">
+                    <div class="tab-pane fade" class="v-pills-run_information" role="tabpanel" aria-labelledby="v-pills-run_information-tab">
                         <table>
                             <td>
                                 <tr>
@@ -397,16 +395,16 @@
                                         <option data-value="eigenvector">Eigenvector</option>
                                     </select>
                                     <!-- <input type="text" class="form-control" id="input_cutoff_betweenness" value=0> -->
-                                    <input type="text" class="form-control" id="input_cutoff_degree" value=0>
+                                    <input type="text" class="form-control" class="input_cutoff_degree" value=0>
                                     <!-- <input type="text" class="form-control" id="input_cutoff_eigenvector" value=0> -->
-                                    <input type="text" class="form-control" id="input_limit" value=10>
-                                    <input type="text" class="form-control" id="input_limit_interactions" value=->
+                                    <input type="text" class="form-control" class="input_limit" value=10>
+                                    <input type="text" class="form-control" class="input_limit_interactions" value=->
 
                                 </tr>
                             </td>
                         </table>
                         <div>
-                            <button id="load_disease" type="button" class="btn btn-primary">Go</button>
+                            <button class="load_disease" type="button" class="btn btn-primary">Go</button>
                         </div>
 
                         <hr/>
@@ -415,13 +413,13 @@
                             <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                                     Show current run
                             </button>
-                            <a id="selector_diseases_link" href="" target="_blank">
+                            <a class="selector_diseases_link" href="" target="_blank">
                                     <button type="button" class="btn btn-secondary">Download original data <i class="fa fa-link"></i>
                                     </button>
                             </a>
-                            <div class="collapse" id="collapseExample">
+                            <div class="collapse" class="collapseExample">
                                 <div class="card card-body">
-                                    <pre id="selector_disease_result"></pre>
+                                    <pre class="selector_disease_result"></pre>
                                 </div>
                             </div>
 
@@ -434,5 +432,6 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 </div>

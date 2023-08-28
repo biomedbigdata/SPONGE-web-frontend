@@ -349,10 +349,8 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="genome-browser" role="tabpanel" aria-labelledby="genome-browser-tab">
-                                <!-- add genome browser tab -->
-                                  <div id="container">
-                                    <iframe src="https://vps-zap841713-2.zap-srv.com/genome-browser?genome=hg38"></iframe>
-                                    <!--<g-browser></g-browser>-->
+                                  <div id="iframe-container">
+                                    <iframe class="responsive-iframe" src="https://vps-zap841713-2.zap-srv.com/genome-browser?genome=hg38"></iframe>
                                   </div>
                             </div>
                         </div>
@@ -377,7 +375,7 @@
                   </div>
                     <!-- Run Information -->
                 <div class="container-fluid">
-                    <div class="tab-pane fade" class="v-pills-run_information" role="tabpanel" aria-labelledby="v-pills-run_information-tab">
+                    <div class="tab-pane fade v-pills-run_information" role="tabpanel" aria-labelledby="v-pills-run_information-tab">
                         <table>
                             <td>
                                 <tr>

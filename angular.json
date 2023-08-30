@@ -161,7 +161,6 @@
       }
     }
   },
-  "defaultProject": "SPONGE-web-frontend",
   "cli": {
     "analytics": false
   }

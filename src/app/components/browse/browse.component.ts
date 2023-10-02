@@ -124,6 +124,9 @@ export class BrowseComponent implements OnInit {
       if ($('#nav-overview-tab').hasClass('active')) {
         $('#nav-overview-tab').removeClass('active');
       }
+      if ($('#genome-browser-tab').hasClass('active')) {
+        $('#genome-browser-tab').removeClass('active');
+      }
     });
 
     $('#nav-nodes-tab').on('click', () => {
@@ -137,6 +140,9 @@ export class BrowseComponent implements OnInit {
       if ($('#nav-overview-tab').hasClass('active')) {
         $('#nav-overview-tab').removeClass('active');
       }
+      if ($('#genome-browser-tab').hasClass('active')) {
+        $('#genome-browser-tab').removeClass('active');
+      }
     });
 
     $('#nav-overview-tab').on('click', () => {
@@ -148,6 +154,24 @@ export class BrowseComponent implements OnInit {
       }
       if ($('#nav-nodes-tab').hasClass('active')) {
         $('#nav-nodes-tab').removeClass('active');
+      }
+      if ($('#genome-browser-tab').hasClass('active')) {
+        $('#genome-browser-tab').removeClass('active');
+      }
+    });
+
+    $('#genome-browser-tab').on('click', () => {
+      if ($(this).hasClass('active')) {
+        $(this).removeClass('active');
+      }
+      if ($('#nav-edges-tab').hasClass('active')) {
+        $('#nav-edges-tab').removeClass('active');
+      }
+      if ($('#nav-nodes-tab').hasClass('active')) {
+        $('#nav-nodes-tab').removeClass('active');
+      }
+      if ($('#nav-overview-tab').hasClass('active')) {
+        $('#nav-overview-tab').removeClass('active');
       }
     });
 

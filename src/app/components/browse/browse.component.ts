@@ -175,6 +175,22 @@ export class BrowseComponent implements OnInit {
       }
     });
 
+    // g-browser testing
+    const iframe = document.querySelector('iframe');
+    const message = {
+      type: 'file',
+      data: { name: 'selected',
+              url: 'https://exbio.wzw.tum.de/sponge-bed/miRNA_BED/hsa-let-7a-2-3p.temp.bed',
+              type: 'Bed',
+              format: 'BED',
+              color: ''
+      }
+    };
+    iframe.addEventListener('load', () => {
+      iframe.contentWindow.postMessage(message, '*');
+    });
+
+
     $('#disease_selectpicker').on('change', () => {
       $('#disease_subtype')[0].selectedIndex = 0;
       if (this.automaticInteractionValueChange) {
@@ -871,7 +887,7 @@ export class BrowseComponent implements OnInit {
     const ensg_numbers = nodes.map((node) => node.id);
 
     // start loading heatmap simultaneously
-    // set maximum amount of genes for heatmap, it gets too much wich a ceartain amoung (readability + loading time)
+    // set maximum amount of genes for heatmap, it gets to be too much with a certain amount (readability + loading time)
     if (ensg_numbers.length < 51) {
       // load expression data
       this.helper.load_heatmap(this.diseaseTrimmed, ensg_numbers);

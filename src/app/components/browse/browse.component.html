@@ -296,6 +296,25 @@
 
                                         </div>
                                     </div>
+
+                                    <div class="row d-flex justify-content-center">
+                                        <div class="text-center hidden loading_spinner_KMP" >
+                                            <div class="spinner-border" role="status">
+                                                <span class="sr-only">Loading the KMPs...</span>
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center container-fluid hidden">
+                                        </div>
+                                    </div>
+                                    <div class="heatmap_placeholder" style="margin-top: 2em">
+                                        <div class="spinner-border" style="margin-left: 50%">
+                                        </div>
+                                        <div style="margin-left: 47.5%">Loading Heatmap...</div>
+                                    </div>
+                                    <div class="expression_heatmap">
+                                    </div>
+
+
                                 </div>
                             </div>
 
@@ -310,6 +329,24 @@
                                     </div>
                                     <!--Node Table-->
                                 <div id='interactions-nodes-table-container'></div>
+
+                                <div class="row d-flex justify-content-center">
+                                    <div class="text-center hidden loading_spinner_KMP" >
+                                        <div class="spinner-border" role="status">
+                                          <span class="sr-only">Loading the KMPs...</span>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center container-fluid hidden">
+                                    </div>
+                                </div>
+                                <div class="heatmap_placeholder" style="margin-top: 2em">
+                                    <div class="spinner-border" style="margin-left: 50%">
+                                    </div>
+                                    <div style="margin-left: 47.5%">Loading Heatmap...</div>
+                                </div>
+                                <div class="expression_heatmap">
+                                </div>
+
                             </div>
 
                             <div class="tab-pane fade" id="nav-edges" role="tabpanel" aria-labelledby="nav-edges-tab">
@@ -345,34 +382,52 @@
                                         </div>
                                     </div>
                                 </div>
+
+                              <div class="row d-flex justify-content-center">
+                                  <div class="text-center hidden loading_spinner_KMP" >
+                                      <div class="spinner-border" role="status">
+                                          <span class="sr-only">Loading the KMPs...</span>
+                                      </div>
+                                  </div>
+                                  <div class="row justify-content-center container-fluid hidden">
+                                  </div>
+                              </div>
+                              <div class="heatmap_placeholder" style="margin-top: 2em">
+                                  <div class="spinner-border" style="margin-left: 50%">
+                                  </div>
+                                  <div style="margin-left: 47.5%">Loading Heatmap...</div>
+                              </div>
+                              <div class="expression_heatmap">
+                              </div>
                             </div>
-                            <!--find way to move/make invis heatmap, expand iframe to take up full div space, add default miRNAs in .ts, test messages from urls from .ts -->
+
+                            <!--find way to move heatmap --done, expand iframe to take up full div space --done, add default miRNAs in .ts, test messages from urls from .ts -->
                             <div class="tab-pane fade" id="genome-browser" role="tabpanel" aria-labelledby="genome-browser-tab">
                                   <div id="iframe-container">
-                                    <iframe class="responsive-iframe" src="https://vps-zap841713-2.zap-srv.com/genome-browser?genome=hg38"></iframe>
+                                      <iframe class="responsive-iframe" src="https://vps-zap841713-2.zap-srv.com/genome-browser?genome=hg38" style="width: 100%; height: 300%;">></iframe>
                                   </div>
                             </div>
                         </div>
                     </div>
 
 
-                    <!--Move this up -->
-                    <div class="row d-flex justify-content-center" id='KMP-plot-container-parent'>
-                            <div class="text-center hidden" id="loading_spinner_KMP" >
-                                    <div class="spinner-border" role="status">
-                                        <span class="sr-only">Loading the KMPs...</span>
-                                    </div>
-                                </div>
-                        <div class="row justify-content-center container-fluid hidden" id="plots">
-                        </div>
-                    </div>
-                    <div id="heatmap_placeholder" style="margin-top: 2em">
-                      <div class="spinner-border" style="margin-left: 50%">
-                      </div>
-                      <div style="margin-left: 47.5%">Loading Heatmap...</div>
-                    </div>
-                    <div id="expression_heatmap">
-                    </div>
+<!--                    &lt;!&ndash;Move this up &ndash;&gt;-->
+<!--                    <div class="row d-flex justify-content-center" id='KMP-plot-container-parent'>-->
+<!--                            <div class="text-center hidden" id="loading_spinner_KMP" >-->
+<!--                                    <div class="spinner-border" role="status">-->
+<!--                                        <span class="sr-only">Loading the KMPs...</span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                        <div class="row justify-content-center container-fluid hidden" id="plots">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div id="heatmap_placeholder" style="margin-top: 2em">-->
+<!--                      <div class="spinner-border" style="margin-left: 50%">-->
+<!--                      </div>-->
+<!--                      <div style="margin-left: 47.5%">Loading Heatmap...</div>-->
+<!--                    </div>-->
+<!--                    <div id="expression_heatmap">-->
+<!--                    </div>-->
 
 
 

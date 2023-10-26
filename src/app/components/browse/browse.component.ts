@@ -194,6 +194,7 @@ export class BrowseComponent implements OnInit {
       console.log('The iframe is loaded');
       // todo
       // on Load of iframe, load the default miRNA
+      setTimeout(() => iframe.contentWindow.postMessage(message, '*'), 3000);
     };
     iframe.onerror = () => {
       console.log('Something wrong happened');

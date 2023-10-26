@@ -36,12 +36,9 @@
               "node_modules/bootstrap/dist/css/bootstrap-reboot.min.css",
               "node_modules/bootstrap-select/dist/css/bootstrap-select.min.css",
               "node_modules/jquery-ui-dist/jquery-ui.min.css",
-              "node_modules/drugst.one/dist/css/drugstone.css",
               "src/styles.less"
             ],
             "scripts": [
-              "node_modules/igv/dist/igv.js",
-              "node_modules/drugst.one/dist/js/drugstone.js",
               "node_modules/jquery/dist/jquery.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "node_modules/bootstrap-select/dist/js/bootstrap-select.min.js",

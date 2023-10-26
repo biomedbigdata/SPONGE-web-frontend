@@ -181,14 +181,23 @@ export class BrowseComponent implements OnInit {
       type: 'file',
       data: { name: 'selected',
               url: 'https://exbio.wzw.tum.de/sponge-bed/miRNA_BED/hsa-let-7a-2-3p.temp.bed',
-              type: 'Bed',
-              format: 'BED',
-              color: ''
+              type: 'annotation',
+              format: 'bed',
+              displayMode: 'EXPANDED',
       }
     };
     iframe.addEventListener('load', () => {
       iframe.contentWindow.postMessage(message, '*');
     });
+
+    iframe.onload = () => {
+      console.log('The iframe is loaded');
+      // todo
+      // on Load of iframe, load the default miRNA
+    };
+    iframe.onerror = () => {
+      console.log('Something wrong happened');
+    };
 
 
     $('#disease_selectpicker').on('change', () => {

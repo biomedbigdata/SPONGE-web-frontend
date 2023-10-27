@@ -176,30 +176,32 @@ export class BrowseComponent implements OnInit {
     });
 
     // g-browser testing
+    //hsa-miR-99b-5p.bed real file
     const iframe = document.querySelector('iframe');
-    const message = {
+    const defaultMessage = {
       type: 'file',
       data: { name: 'selected',
-              url: 'https://exbio.wzw.tum.de/sponge-bed/miRNA_BED/hsa-let-7a-2-3p.temp.bed',
-              type: 'annotation',
-              format: 'bed',
-              displayMode: 'EXPANDED',
+        url: 'https://exbio.wzw.tum.de/sponge-bed/miRNA_BED/hsa-let-7a-2-3p.temp.bed',
+        type: 'annotation',
+        format: 'bed',
+        displayMode: 'EXPANDED',
       }
     };
-    iframe.addEventListener('load', () => {
-      iframe.contentWindow.postMessage(message, '*');
-    });
+    // iframe.addEventListener('load', () => {
+    //   iframe.contentWindow.postMessage(default_message, '*');
+    // });
 
     iframe.onload = () => {
       console.log('The iframe is loaded');
       // todo
       // on Load of iframe, load the default miRNA
-      setTimeout(() => iframe.contentWindow.postMessage(message, '*'), 3000);
+      setTimeout(() => iframe.contentWindow.postMessage(defaultMessage, '*'), 3000);
     };
     iframe.onerror = () => {
       console.log('Something wrong happened');
     };
 
+    // mirna_promises or get mirna_column
 
     $('#disease_selectpicker').on('change', () => {
       $('#disease_subtype')[0].selectedIndex = 0;
@@ -609,6 +611,11 @@ export class BrowseComponent implements OnInit {
       $('#edge_table_toggle_mirnas').click();
 
       const edgesRaw = this.edgeTable.data();
+      //genome browser
+      const columnValues = edgesRaw.map((item) => item[5]);
+      console.info('edge data');
+      console.info(columnValues);
+      //genome browser
 
       const edges = [];
       for (let i = 0; i < edgesRaw.length; i++) {
@@ -627,6 +634,8 @@ export class BrowseComponent implements OnInit {
         });
       }
       $('#edge_data').text(JSON.stringify(orderedData));
+
+
       return edges;
     }
   }

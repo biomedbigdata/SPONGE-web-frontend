@@ -853,7 +853,7 @@ export class BrowseComponent implements OnInit {
 
     // header
     const header = data.dataset.disease_name;
-    delete data.dataset;
+    data.dataset = null;
 
     const run_table = document.createElement('table');
     const run_name = document.createElement('th');

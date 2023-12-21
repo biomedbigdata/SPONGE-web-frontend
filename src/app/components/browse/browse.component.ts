@@ -5,6 +5,7 @@ import { Helper } from '../../helper';
 import { Session } from '../../session';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { SharedService } from '../../shared.service';
+import axios from 'axios';
 
 import sigma from 'sigma';
 import { enableDebugTools } from '@angular/platform-browser';
@@ -181,7 +182,7 @@ export class BrowseComponent implements OnInit {
     const defaultMessage = {
       type: 'file',
       data: { name: 'selected',
-        url: 'https://exbio.wzw.tum.de/sponge-bed/miRNA_BED/hsa-let-7a-2-3p.temp.bed',
+        url: 'https://exbio.wzw.tum.de/sponge-bed/miRNA_BED/hsa-miR-10b-5p.bed',
         type: 'annotation',
         format: 'bed',
         displayMode: 'EXPANDED',
@@ -195,13 +196,57 @@ export class BrowseComponent implements OnInit {
       console.log('The iframe is loaded');
       // todo
       // on Load of iframe, load the default miRNA
-      setTimeout(() => iframe.contentWindow.postMessage(defaultMessage, '*'), 3000);
+      setTimeout(() => iframe.contentWindow.postMessage(update_g_browse, '*'), 3000);
     };
     iframe.onerror = () => {
-      console.log('Something wrong happened');
+      console.log('iframe didnt load');
     };
 
-    // mirna_promises or get mirna_column
+    //var gene_list = ["ENSG00000203995", "ENSG00000155893", "ENSG00000152076", "ENSG00000172379", "ENSG00000165194", "ENSG00000165238", "ENSG00000130413", "ENSG00000130413", "ENSG00000251364", "ENSG00000261409"]
+    var gene_list = ["ENSG00000203995", "ENSG00000155893", "ENSG00000152076"]
+    //var miRNA_list = ["hsa-miR-10b-5p", "hsa-miR-372-3p", "hsa-miR-26b-5p", "hsa-miR-24-3p", "hsa-miR-27a-3p", "hsa-miR-338-3p", "hsa-miR-30e-5p", "hsa-miR-29a-3p", "hsa-let-7g-5p", "hsa-miR-19a-3p", "hsa-miR-520b-3p", "hsa-miR-193a-3p", "hsa-miR-195-5p", "hsa-miR-454-3p", "hsa-miR-216a-5p", "hsa-miR-139-5p", "hsa-miR-23a-3p", "hsa-let-7b-5p", "hsa-miR-365a-3p", "hsa-miR-96-5p", "hsa-miR-203a-3p", "hsa-let-7f-5p", "hsa-miR-205-5p", "hsa-miR-15a-5p", "hsa-let-7d-5p", "hsa-miR-107", "hsa-miR-92a-3p", "hsa-miR-130a-3p", "hsa-miR-18a-5p", "hsa-miR-103a-3p", "hsa-miR-590-5p", "hsa-miR-424-5p", "hsa-miR-130a-5p", "hsa-miR-212-3p", "hsa-miR-150-5p", "hsa-miR-193b-3p", "hsa-miR-34a-5p", "hsa-let-7a-5p", "hsa-miR-520c-3p", "hsa-miR-148b-3p", "hsa-miR-19b-3p", "hsa-miR-181b-5p", "hsa-let-7c-5p", "hsa-miR-31-5p", "hsa-miR-32-5p", "hsa-miR-7-5p", "hsa-miR-181a-5p", "hsa-miR-33b-5p", "hsa-miR-503-5p"]
+    var miRNA_list = ["hsa-miR-10b-5p", "hsa-miR-372-3p", "hsa-miR-26b-5p"]
+    //TODO POST request with input data
+    var front_data = {gene_list, miRNA_list}
+    //front_data = JSON.stringify(front_data)
+    //where to send the post
+    //const apiUrl = 'http://localhost:8080/process'
+    const apiUrl = 'http://localhost:8080/process'
+    let incoming_files
+    //send to server
+    axios.post(apiUrl, front_data)
+      .then((response) => {
+        console.log('Request successful', response.data);
+        incoming_files = response.data
+      })
+      .catch((error) => {
+        console.error('Request failed', error);
+      });
+
+    //return JSON object as BLOB
+    let blob
+    if (incoming_files) {
+      console.log("recieved incoming files")
+      let json_reduced_files = JSON.stringify(incoming_files);
+      console.log("print incoming files")
+      //console.log(incoming_files)
+      console.log("printed incoming files")
+      blob = new Blob([json_reduced_files], { type: 'application/json' });
+      // Do something with the blob, such as downloading or using it in your application.
+    } else {
+          console.log("Waiting for files")
+    }
+
+    //same as message, replace url with blob
+    const update_g_browse = {
+      type: 'file',
+      data: { name: 'selected',
+        url: blob,
+        type: 'annotation',
+        format: 'bed',
+        displayMode: 'EXPANDED',
+      }
+    };
 
     $('#disease_selectpicker').on('change', () => {
       $('#disease_subtype')[0].selectedIndex = 0;
@@ -341,6 +386,7 @@ export class BrowseComponent implements OnInit {
           );
         },
       });
+
 
       const allData = data.concat(data2);
       const nodes = this.parse_node_data(this.helper, sharedData, allData);
@@ -615,6 +661,7 @@ export class BrowseComponent implements OnInit {
       const columnValues = edgesRaw.map((item) => item[5]);
       console.info('edge data');
       console.info(columnValues);
+      //TODO add HTTP to backend sending the mRNA and miRNA data
       //genome browser
 
       const edges = [];
